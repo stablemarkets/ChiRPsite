@@ -48,18 +48,18 @@ Package implementation details:
     
 ## Supported Outcome Models
 ### Zero-Inflated Outcomes with `ZDPMix()`
-In this implementation, $f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi) $. Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero.
+In this implementation, $f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi)$. Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero.
 
 A Gaussian prior $N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )$ is chosen for $\beta$. $\beta_{OLS}$ is a linear regression estimated using observations where $y>0$. $\Sigma$ is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter `beta_var_scale` allows the user to make the prior more or less dispersed around the observed data.
 
 A Gaussian prior $N_p(0 , 2\cdot I_p )$. Note that this is actually fairly flat on the logit scale putting substantial prior probability on odds ratios in the range of $.01-.70$.
 
-Sampling for this model involves a Metropolis step to propose a draw of $\gamma$. The optional tuning parameter `\prop_z_sigma` is a length $p$ vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.
+Sampling for this model involves a Metropolis step to propose a draw of $\gamma$. The optional tuning parameter `prop_z_sigma` is a length $p$ vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.
 
-Finally, we place an Inverse Gamma prior on $\phi \sim InvGamma(g_1, b_1)$ on the data variance. The optional argument `phi_y` is a length two vector `phi_y`=$(g_1, b_1)$ that allows the user to specify this parameters.
+Finally, we place an Inverse Gamma prior on $\phi \sim InvGamma(g_1, b_1)$ on the data variance. The optional tuning parameter `phi_y` is a length two vector `phi_y`=$(g_1, b_1)$ that allows the user to specify this parameters.
 
 ### Continuous Outcomes `NDPMix()`
-In this implementation, $f_y(y_i|x_i, \eta_i) = N(x_i'\beta, \phi) $. All the same applies as in the zero-inflated case above.
+In this implementation, $f_y(y_i|x_i, \eta_i) = N(x_i'\beta, \phi)$. All the same applies as in the zero-inflated case above.
 
 ### Binary Outcomes `PDPMix()`
 In this implementation, $f_y(y_i|x_i, \eta_i) = Ber( \Phi( x_i'\beta))$, where $\Phi$ is the standard normal CDF. 
