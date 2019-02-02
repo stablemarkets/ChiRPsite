@@ -380,10 +380,10 @@ div.tocify {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="modeldesc.html">Model Descriptions</a>
+  <a href="examples.html">Examples</a>
 </li>
 <li>
-  <a href="examples.html">Examples</a>
+  <a href="modeldesc.html">Model Descriptions</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -410,25 +410,29 @@ div.tocify {
 </script>
 <div id="the-generative-model" class="section level2">
 <h2>The Generative Model</h2>
-<p>The package implements the following generative Chinese Restaurant Process (CRP) regression mixture. For data <span class="math inline">\(D = (y_i, x_i)_{i=1:n}\)</span>, where <span class="math inline">\(x\)</span> is a <span class="math inline">\(p \times 1\)</span> covariate vector (including an intercept) and <span class="math inline">\(y_i\)</span> is a scalar outcome observed for <span class="math inline">\(n\)</span> subjects indexed by <span class="math inline">\(i\)</span>. The full probability model is given by <span class="math display">\[ \begin{aligned}
-y_i | x_i, \eta_y &amp; \sim f_y(y_i|x_i, \eta_i) \\
+<p>The <code>ChiRP</code> package implements the following generative <em>Chi</em>nese <em>R</em>estaurant <em>P</em>rocess (CRP) regression mixture. Each regression function takes in training data <span class="math inline">\(D = (y_i, x_i)_{i=1:n}\)</span> (and a test set, if desired), where <span class="math inline">\(x_i\)</span> is a <span class="math inline">\(p \times 1\)</span> covariate vector (including an intercept) and <span class="math inline">\(y_i\)</span> is a scalar outcome observed for <span class="math inline">\(n\)</span> subjects indexed by <span class="math inline">\(i\)</span>. The regression functions returns, for each subject in the training (and testing, if applicable) data set, a posterior distribution of predicted outcome <span class="math inline">\(y\)</span>. It also returns cluster assignments for each subject.</p>
+<p>The full probability model is given by <span class="math display">\[ \begin{aligned}
+y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
       x_i | \theta_i &amp; \sim f_x(x_i | \theta_i ) \\
       \eta_i, \theta_i | G &amp; \sim G \\
       G &amp; \sim DP(\alpha G_0)
 \end{aligned}
-\]</span> Above, <span class="math inline">\(f_y\)</span> is the conditional distribution of the outcome. It is governed by parameters <span class="math inline">\(\eta_i\)</span>. The joint distribution of the covariates, <span class="math inline">\(f_x\)</span>, is governed by <span class="math inline">\(\theta_i\)</span>. These parameters are distributed according to an unknown distribution <span class="math inline">\(G\)</span>, to which we assign a <a href="https://stablemarkets.shinyapps.io/dpmixapp/">Dirichlet Process</a> (DP) prior. Since draws, <span class="math inline">\(G\)</span>, from a DP are discrete, there are bound to be ties among the subject specific parameters <span class="math inline">\((\eta_i, \theta_i)\)</span>. That is, subjects will tend to cluster together. The number of clusters is not set <strong>a priori</strong>, but rather infinitely many clusters are assumed.</p>
+\]</span> Above, <span class="math inline">\(f_y\)</span> is the conditional distribution of the outcome. It is governed by parameters <span class="math inline">\(\eta_i\)</span>. Below, we outline three currently supported outcome types: zero-inflated continuous outcomes, continous outcomes, and binary outcomes.</p>
+<p>The joint distribution of the covariates, <span class="math inline">\(f_x\)</span>, is governed by <span class="math inline">\(\theta_i\)</span>. These parameters are distributed according to an unknown distribution <span class="math inline">\(G\)</span>, to which we assign a <a href="https://stablemarkets.shinyapps.io/dpmixapp/">Dirichlet Process</a> (DP) prior. Since draws, <span class="math inline">\(G\)</span>, from a DP are discrete, there are bound to be ties among the subject specific parameters <span class="math inline">\((\eta_i, \theta_i)\)</span>. That is, subjects will tend to cluster together. The number of clusters is not set <strong>a priori</strong>, but rather infinitely many clusters are assumed.</p>
 <p>This induced clustering partitions complex data into more homogenous subgroups - each with their own set of regression parameters. This allows CRP models to obtain flexible fits where parametric models may fail.</p>
 <p>Package implementation details:</p>
 <ul>
 <li>All models accomodate any number of binary and continuous covariates <em>only</em>. Categorical variables are not supported (yet).</li>
 <li>All models assume independence among covariates: <span class="math inline">\(f_x(x_i) = \prod_{j=1}^p f_{x^p}(x_i^p|\theta_i^p)\)</span>
 <ul>
-<li><span class="math inline">\(f_{x^p}\)</span> is set to be Bernoulli for binary covariates and Gaussian, <span class="math inline">\(N(\lambda, \tau)\)</span> for continuous covariates</li>
+<li><span class="math inline">\(f_{x^p}\)</span> is set to be Bernoulli for binary covariates and Gaussian, <span class="math inline">\(N(\lambda, \tau)\)</span> for continuous covariates.</li>
 </ul></li>
 <li>Hyperparameters
 <ul>
 <li>Concentration parameter, <span class="math inline">\(\alpha\)</span>, is estimated with a <span class="math inline">\(Gam(1,1)\)</span> prior.</li>
-<li>For continuous covariates, we use hyperpriors <span class="math inline">\(\lambda \sim N(\mu, var=\sigma)\)</span> and <span class="math inline">\(\tau \sim InvGamma(shape=g_1, rate=b_1)\)</span></li>
+<li>For continuous covariates, we use hyperpriors <span class="math inline">\(\lambda \sim N(\mu, var=\sigma^2)\)</span> and <span class="math inline">\(\tau \sim InvGamma(shape=g_2, rate=b_2)\)</span>.</li>
+<li>In an Empirical Bayes fashion, we set <span class="math inline">\(\mu = \bar{x}\)</span> and <span class="math inline">\(\sigma^2 = mu_scale \cdot var(x)\)</span>, where <code>mu_scale</code> is an optional tuning parameter.</li>
+<li>We set <span class="math inline">\(g_2=2\)</span> and <span class="math inline">\(b2 = tau_scale\cdotvar(x)\)</span> for all continous covariates, where <code>tau_scale</code> is an optional tuning parameter. If <code>tau_scale=1</code>, the prior for the variance is centered around the empirical. For <code>tau_scale&gt;1</code>, we allow for larger variances <strong>a priori</strong> .</li>
 </ul></li>
 </ul>
 </div>
@@ -436,12 +440,19 @@ y_i | x_i, \eta_y &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <h2>Supported Outcome Models</h2>
 <div id="zero-inflated-outcomes-with-zdpmix" class="section level3">
 <h3>Zero-Inflated Outcomes with <code>ZDPMix()</code></h3>
+<p>In this implementation, $f_y(y_i|x_i, _i) = (x_i’_i)_0(y) + (1 - (x_i’_i) ) N(x_i’, ) $. Where <span class="math inline">\(\pi(x_i&#39;\gamma_i) = expit(x_i&#39;\gamma_i)\)</span> is the probability of the outcome being zero.</p>
+<p>A Gaussian prior <span class="math inline">\(N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )\)</span> is chosen for <span class="math inline">\(\beta\)</span>. <span class="math inline">\(\beta_{OLS}\)</span> is a linear regression estimated using observations where <span class="math inline">\(y&gt;0\)</span>. <span class="math inline">\(\Sigma\)</span> is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter <code>beta_var_scale</code> allows the user to make the prior more or less dispersed around the observed data.</p>
+<p>A Gaussian prior <span class="math inline">\(N_p(0 , 2\cdot I_p )\)</span>. Note that this is actually fairly flat on the logit scale putting substantial prior probability on odds ratios in the range of <span class="math inline">\(.01-.70\)</span>.</p>
+<p>Sampling for this model involves a Metropolis step to propose a draw of <span class="math inline">\(\gamma\)</span>. The optional tuning parameter <code>\prop_z_sigma</code> is a length <span class="math inline">\(p\)</span> vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.</p>
+<p>Finally, we place an Inverse Gamma prior on <span class="math inline">\(\phi \sim InvGamma(g_1, b_1)\)</span> on the data variance. The optional argument <code>phi_y</code> is a length two vector <code>phi_y</code>=<span class="math inline">\((g_1, b_1)\)</span> that allows the user to specify this parameters.</p>
 </div>
 <div id="continuous-outcomes-ndpmix" class="section level3">
 <h3>Continuous Outcomes <code>NDPMix()</code></h3>
+<p>In this implementation, $f_y(y_i|x_i, _i) = N(x_i’, ) $. All the same applies as in the zero-inflated case above.</p>
 </div>
 <div id="binary-outcomes-pdpmix" class="section level3">
 <h3>Binary Outcomes <code>PDPMix()</code></h3>
+<p>In this implementation, <span class="math inline">\(f_y(y_i|x_i, \eta_i) = Ber( \Phi( x_i&#39;\beta))\)</span>, where <span class="math inline">\(\Phi\)</span> is the standard normal CDF.</p>
 </div>
 </div>
 <div id="posterior-clustering" class="section level2">
@@ -450,17 +461,14 @@ y_i | x_i, \eta_y &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <h3>The Chinese Restaurant Process</h3>
 <p>Let <span class="math inline">\(c_{1:n}\)</span> represent a vector of cluster indicators for the <span class="math inline">\(n\)</span> subjects. Since the DP prior induces a clustering on patients, we can make inference on <span class="math inline">\(c_{1:n}\)</span>. All functions in the model output posterior cluster assignments.</p>
 </div>
-</div>
-<div id="posterior-mode-cluster-assignment" class="section level2">
-<h2>Posterior Mode Cluster Assignment</h2>
+<div id="posterior-cluster-assignment" class="section level3">
+<h3>Posterior Cluster Assignment</h3>
 <p>Adjacency Matrices.</p>
 </div>
-<div id="predictive-distribution" class="section level2">
-<h2>Predictive Distribution</h2>
-<p>Polya Urn Scheme for Preditions.</p>
 </div>
-<div id="references" class="section level2">
-<h2>References</h2>
+<div id="posterior-predictions" class="section level2">
+<h2>Posterior Predictions</h2>
+<p>Polya Urn Scheme for Preditions.</p>
 </div>
 
 
