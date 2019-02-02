@@ -2,8 +2,19 @@
 title: "ChiRP: Chinese Restaurant Process Models for Regression and Clustering"
 author: "Arman Oganisian"
 date: "2/2/2019"
-output: html_document
+output:
+  html_document:
+    includes:
+      in_header: "favicon.html" 
 ---
+
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
+   });
+</script>
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
