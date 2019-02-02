@@ -30,7 +30,7 @@ library(ChiRP)
 ```
 
 ## Contact and Issue Reporting
-Please [report issues](https://github.com/stablemarkets/ChiRP/issues) on GitHub. Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or Twitter ( [@StableMarkets](https://twitter.com/StableMarkets)  ). 
+Please [report issues](https://github.com/stablemarkets/ChiRP/issues) on GitHub. Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or  [Twitter](https://twitter.com/StableMarkets). 
 
 ## References
 [A Bayesian Nonparametric Method for Estimating Causal Treatment Effects on Zero-Inflated Outcomes](https://arxiv.org/abs/1810.09494). A. Oganisian et al. 2018.
