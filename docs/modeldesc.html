@@ -440,15 +440,15 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <h2>Supported Outcome Models</h2>
 <div id="zero-inflated-outcomes-with-zdpmix" class="section level3">
 <h3>Zero-Inflated Outcomes with <code>ZDPMix()</code></h3>
-<p>In this implementation, $f_y(y_i|x_i, _i) = (x_i’_i)_0(y) + (1 - (x_i’_i) ) N(x_i’, ) $. Where <span class="math inline">\(\pi(x_i&#39;\gamma_i) = expit(x_i&#39;\gamma_i)\)</span> is the probability of the outcome being zero.</p>
+<p>In this implementation, <span class="math inline">\(f_y(y_i|x_i, \eta_i) = \pi(x_i&#39;\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i&#39;\gamma_i) ) \cdot N(x_i&#39;\beta, \phi)\)</span>. Where <span class="math inline">\(\pi(x_i&#39;\gamma_i) = expit(x_i&#39;\gamma_i)\)</span> is the probability of the outcome being zero.</p>
 <p>A Gaussian prior <span class="math inline">\(N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )\)</span> is chosen for <span class="math inline">\(\beta\)</span>. <span class="math inline">\(\beta_{OLS}\)</span> is a linear regression estimated using observations where <span class="math inline">\(y&gt;0\)</span>. <span class="math inline">\(\Sigma\)</span> is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter <code>beta_var_scale</code> allows the user to make the prior more or less dispersed around the observed data.</p>
 <p>A Gaussian prior <span class="math inline">\(N_p(0 , 2\cdot I_p )\)</span>. Note that this is actually fairly flat on the logit scale putting substantial prior probability on odds ratios in the range of <span class="math inline">\(.01-.70\)</span>.</p>
-<p>Sampling for this model involves a Metropolis step to propose a draw of <span class="math inline">\(\gamma\)</span>. The optional tuning parameter <code>\prop_z_sigma</code> is a length <span class="math inline">\(p\)</span> vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.</p>
-<p>Finally, we place an Inverse Gamma prior on <span class="math inline">\(\phi \sim InvGamma(g_1, b_1)\)</span> on the data variance. The optional argument <code>phi_y</code> is a length two vector <code>phi_y</code>=<span class="math inline">\((g_1, b_1)\)</span> that allows the user to specify this parameters.</p>
+<p>Sampling for this model involves a Metropolis step to propose a draw of <span class="math inline">\(\gamma\)</span>. The optional tuning parameter <code>prop_z_sigma</code> is a length <span class="math inline">\(p\)</span> vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.</p>
+<p>Finally, we place an Inverse Gamma prior on <span class="math inline">\(\phi \sim InvGamma(g_1, b_1)\)</span> on the data variance. The optional tuning parameter <code>phi_y</code> is a length two vector <code>phi_y</code>=<span class="math inline">\((g_1, b_1)\)</span> that allows the user to specify this parameters.</p>
 </div>
 <div id="continuous-outcomes-ndpmix" class="section level3">
 <h3>Continuous Outcomes <code>NDPMix()</code></h3>
-<p>In this implementation, $f_y(y_i|x_i, _i) = N(x_i’, ) $. All the same applies as in the zero-inflated case above.</p>
+<p>In this implementation, <span class="math inline">\(f_y(y_i|x_i, \eta_i) = N(x_i&#39;\beta, \phi)\)</span>. All the same applies as in the zero-inflated case above.</p>
 </div>
 <div id="binary-outcomes-pdpmix" class="section level3">
 <h3>Binary Outcomes <code>PDPMix()</code></h3>
