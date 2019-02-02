@@ -1,0 +1,27 @@
+---
+title: "Chinese Restaurant Process Mixture Models"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A Generative Model
+
+\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]
+\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]
+
+$$ \begin{aligned}
+y_i | x_i, \eta_y & \sim f_y(y_i|x_i, \eta_i) \\
+      x_i | \theta_i & \sim f_x(x_i | \theta_i ) \\
+      \eta_i, \theta_i & \sim DP(\alpha G_0)
+\end{aligned}
+$$
+
+## Chinese Restaurant Process Prior
+
+## Predictive Distribution
+
+## MCMC Computation
+
+## References

@@ -11,7 +11,7 @@
 
 
 
-<title>Speed and distance</title>
+<title>Chinese Restaurant Process Mixture Models</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -274,7 +274,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Cars</a>
+      <a class="navbar-brand" href="index.html">ChiRP</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -282,7 +282,10 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="speed-and-distance.html">Speed and Distance</a>
+  <a href="modeldesc.html">Model Descriptions</a>
+</li>
+<li>
+  <a href="examples.html">Examples</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -296,29 +299,32 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Speed and distance</h1>
+<h1 class="title toc-ignore">Chinese Restaurant Process Mixture Models</h1>
 
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div id="a-generative-model" class="section level2">
+<h2>A Generative Model</h2>
+<p><span class="math display">\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]</span> <span class="math display">\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]</span></p>
+<p><span class="math display">\[ \begin{aligned}
+y_i | x_i, \eta_y &amp; \sim f_y(y_i|x_i, \eta_i) \\
+      x_i | \theta_i &amp; \sim f_x(x_i | \theta_i ) \\
+      \eta_i, \theta_i &amp; \sim DP(\alpha G_0)
+\end{aligned}
+\]</span></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="speed-and-distance_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="chinese-restaurant-process-prior" class="section level2">
+<h2>Chinese Restaurant Process Prior</h2>
+</div>
+<div id="predictive-distribution" class="section level2">
+<h2>Predictive Distribution</h2>
+</div>
+<div id="mcmc-computation" class="section level2">
+<h2>MCMC Computation</h2>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
 </div>
 
 
