@@ -48,9 +48,23 @@ Package implementation details:
     
 ## Supported Outcome Models
 ### Zero-Inflated Outcomes with `ZDPMix()`
-In this implementation, $f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi)$. Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero.
+In this implementation, 
+\[f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi)\] 
 
-A Gaussian prior $N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )$ is chosen for $\beta$. $\beta_{OLS}$ is a linear regression estimated using observations where $y>0$. $\Sigma$ is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter `beta_var_scale` allows the user to make the prior more or less dispersed around the observed data.
+Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero. See this [paper](https://arxiv.org/abs/1810.09494) for methodological details.
+
+The function call looks like this:
+
+```{r, eval=F}
+zDP_res<-ZDPMix(d_train = d, ## training data.frame() object
+                d_test = dt, ## test data.frame() object 
+                formula = y ~ L1 + X1 + X2 + X3 + X4 + A,
+                ## specify total number of mcmc draws (iter) and burnin (burnin)
+                burnin=2000, iter = 3000) 
+# this will return iter - burnin posterior draws.
+```
+
+`ZDPMix()`A Gaussian prior $N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )$ is chosen for $\beta$. $\beta_{OLS}$ is a linear regression estimated using observations where $y>0$. $\Sigma$ is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter `beta_var_scale` allows the user to make the prior more or less dispersed around the observed data.
 
 A Gaussian prior $N_p(0 , 2\cdot I_p )$. Note that this is actually fairly flat on the logit scale putting substantial prior probability on odds ratios in the range of $.01-.70$.
 
