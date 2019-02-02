@@ -33,6 +33,8 @@ library(ChiRP)
 Please [report issues](https://github.com/stablemarkets/ChiRP/issues) on GitHub. Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or Twitter ( [@StableMarkets](https://twitter.com/StableMarkets)  ). 
 
 ## References
+[A Bayesian Nonparametric Method for Estimating Causal Treatment Effects on Zero-Inflated Outcomes](https://arxiv.org/abs/1810.09494). A. Oganisian et al. 2018.
 
+[Dirichlet Process Mixtures of Generalized Linear Models](http://www.cs.columbia.edu/~blei/papers/HannahBleiPowell2011.pdf) Hannah et al. 2011.
 
 

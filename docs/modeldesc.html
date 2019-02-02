@@ -306,22 +306,39 @@ $(document).ready(function () {
 
 <div id="a-generative-model" class="section level2">
 <h2>A Generative Model</h2>
-<p><span class="math display">\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]</span> <span class="math display">\[ y_i | x_i, \theta_y \sim f_y(y_i|x_i, \theta_y) \]</span></p>
-<p><span class="math display">\[ \begin{aligned}
+<p>The package implements the following generative Chinese Restaurant Process (CRP) regression mixture. For data <span class="math inline">\(D = (y_i, x_i)_{i=1:n}\)</span>, where <span class="math inline">\(x\)</span> is a <span class="math inline">\(p \times 1\)</span> covariate vector (including an intercept) and <span class="math inline">\(y_i\)</span> is a scalar outcome observed for <span class="math inline">\(n\)</span> subjects indexed by <span class="math inline">\(i\)</span>. The full probability model is given by <span class="math display">\[ \begin{aligned}
 y_i | x_i, \eta_y &amp; \sim f_y(y_i|x_i, \eta_i) \\
       x_i | \theta_i &amp; \sim f_x(x_i | \theta_i ) \\
-      \eta_i, \theta_i &amp; \sim DP(\alpha G_0)
+      \eta_i, \theta_i | G &amp; \sim G \\
+      G &amp; \sim DP(\alpha G_0)
 \end{aligned}
-\]</span></p>
+\]</span> Above, <span class="math inline">\(f_y\)</span> is the conditional distribution of the outcome. It is governed by parameters <span class="math inline">\(\eta_i\)</span>. The joint distribution of the covariates, <span class="math inline">\(f_x\)</span>, is governed by <span class="math inline">\(\theta_i\)</span>. These parameters are distributed according to an unknown distribution <span class="math inline">\(G\)</span>, to which we assign a <a href="https://stablemarkets.shinyapps.io/dpmixapp/">Dirichlet Process</a> (DP) prior. Since draws, <span class="math inline">\(G\)</span>, from a DP are discrete, there are bound to be ties among the subject specific parameters <span class="math inline">\((\eta_i, \theta_i)\)</span>. That is, subjects will tend to cluster together. The number of clusters is not set <strong>a priori</strong>, but rather infinitely many clusters are assumed. \</p>
+<p>This induced clustering partitions complex data into more homogenous subgroups - each with their own set of regression parameters. This allows CRP models to obtain flexible fits where parametric models may fail. \</p>
+<p>Package implementation details: * All models accomodate any number of binary and continuous covariates <em>only</em>. Categorical variables are not supported (yet). * All models assume independence among covariates: <span class="math inline">\(f_x(x_i) = \prod_{j=1}^p f_{x^p}(x_i^p|\theta_i^p)\)</span> + <span class="math inline">\(f_{x^p}\)</span> is set to be Bernoulli for binary covariates and Gaussian, <span class="math inline">\(N(\lambda, \tau)\)</span> for continuous covariates * Hyperparameters + Concentration parameter, <span class="math inline">\(\alpha\)</span>, is estimated with a <span class="math inline">\(Gam(1,1)\)</span> prior. + For continuous covariates, we use hyperpriors <span class="math inline">\(\lambda \sim N(\mu, var=\sigma)\)</span> and <span class="math inline">\(\tau \sim InvGamma(shape=g_1, rate=b_1)\)</span></p>
 </div>
-<div id="chinese-restaurant-process-prior" class="section level2">
-<h2>Chinese Restaurant Process Prior</h2>
+<div id="chinese-restaurant-process" class="section level2">
+<h2>Chinese Restaurant Process</h2>
+<p>Let <span class="math inline">\(c_{1:n}\)</span> represent a vector of cluster indicators for the <span class="math inline">\(n\)</span> subjects. Since the DP prior induces a clustering on patients, we can make inference on <span class="math inline">\(c_{1:n}\)</span>. All functions in the model output posterior cluster assignments.</p>
 </div>
 <div id="predictive-distribution" class="section level2">
 <h2>Predictive Distribution</h2>
+<p>Polya Urn Scheme for Preditions.</p>
 </div>
-<div id="mcmc-computation" class="section level2">
-<h2>MCMC Computation</h2>
+<div id="posterior-mode-cluster-assignment" class="section level2">
+<h2>Posterior Mode Cluster Assignment</h2>
+<p>Adjacency Matrices.</p>
+</div>
+<div id="available-outcome-models" class="section level2">
+<h2>Available Outcome Models</h2>
+<div id="zero-inflated-outcomes" class="section level3">
+<h3>Zero-Inflated Outcomes</h3>
+</div>
+<div id="continuous-outcomes" class="section level3">
+<h3>Continuous Outcomes</h3>
+</div>
+<div id="binary-outcomes" class="section level3">
+<h3>Binary Outcomes</h3>
+</div>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
