@@ -19,15 +19,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## The Generative Model
-The package implements the following generative Chinese Restaurant Process (CRP) regression mixture. For data $D = (y_i, x_i)_{i=1:n}$, where $x$ is a $p \times 1$ covariate vector (including an intercept) and $y_i$ is a scalar outcome observed for $n$ subjects indexed by $i$. The full probability model is given by
+The `ChiRP` package implements the following generative *Chi*nese *R*estaurant *P*rocess (CRP) regression mixture. Each regression function takes in training data $D = (y_i, x_i)_{i=1:n}$ (and a test set, if desired), where $x_i$ is a $p \times 1$ covariate vector (including an intercept) and $y_i$ is a scalar outcome observed for $n$ subjects indexed by $i$. The regression functions returns, for each subject in the training (and testing, if applicable) data set, a posterior distribution of predicted outcome $y$. It also returns cluster assignments for each subject.
+
+The full probability model is given by
 $$ \begin{aligned}
-y_i | x_i, \eta_y & \sim f_y(y_i|x_i, \eta_i) \\
+y_i | x_i, \eta_i & \sim f_y(y_i|x_i, \eta_i) \\
       x_i | \theta_i & \sim f_x(x_i | \theta_i ) \\
       \eta_i, \theta_i | G & \sim G \\
       G & \sim DP(\alpha G_0)
 \end{aligned}
 $$
-Above, $f_y$ is the conditional distribution of the outcome. It is governed by parameters $\eta_i$. The joint distribution of the covariates, $f_x$, is governed by $\theta_i$. These parameters are distributed according to an unknown distribution $G$, to which we assign a [Dirichlet Process](https://stablemarkets.shinyapps.io/dpmixapp/) (DP) prior. Since draws, $G$, from a DP are discrete, there are bound to be ties among the subject specific parameters $(\eta_i, \theta_i)$. That is, subjects will tend to cluster together. The number of clusters is not set **a priori**, but rather infinitely many clusters are assumed.
+Above, $f_y$ is the conditional distribution of the outcome. It is governed by parameters $\eta_i$. Below, we outline three currently supported outcome types: zero-inflated continuous outcomes, continous outcomes, and binary outcomes.
+
+The joint distribution of the covariates, $f_x$, is governed by $\theta_i$. These parameters are distributed according to an unknown distribution $G$, to which we assign a [Dirichlet Process](https://stablemarkets.shinyapps.io/dpmixapp/) (DP) prior. Since draws, $G$, from a DP are discrete, there are bound to be ties among the subject specific parameters $(\eta_i, \theta_i)$. That is, subjects will tend to cluster together. The number of clusters is not set **a priori**, but rather infinitely many clusters are assumed.
 
 This induced clustering partitions complex data into more homogenous subgroups - each with their own set of regression parameters. This allows CRP models to obtain flexible fits where parametric models may fail.
 
@@ -35,24 +39,37 @@ Package implementation details:
 
 * All models accomodate any number of binary and continuous covariates *only*. Categorical variables are not supported (yet).
 * All models assume independence among covariates: $f_x(x_i) = \prod_{j=1}^p f_{x^p}(x_i^p|\theta_i^p)$
-    + $f_{x^p}$ is set to be Bernoulli for binary covariates and Gaussian, $N(\lambda, \tau)$ for continuous covariates
+    + $f_{x^p}$ is set to be Bernoulli for binary covariates and Gaussian, $N(\lambda, \tau)$ for continuous covariates.
 * Hyperparameters
     + Concentration parameter, $\alpha$, is estimated with a $Gam(1,1)$ prior.
-    + For continuous covariates, we use hyperpriors $\lambda \sim N(\mu, var=\sigma)$ and $\tau \sim InvGamma(shape=g_1, rate=b_1)$
+    + For continuous covariates, we use hyperpriors $\lambda \sim N(\mu, var=\sigma^2)$ and $\tau \sim InvGamma(shape=g_2, rate=b_2)$.
+    + In an Empirical Bayes fashion, we set $\mu = \bar{x}$ and $\sigma^2 = mu_scale \cdot var(x)$, where `mu_scale` is an optional tuning parameter.
+    + We set $g_2=2$ and $b2 = tau_scale\cdotvar(x)$ for all continous covariates, where `tau_scale` is an optional tuning parameter. If `tau_scale=1`, the prior for the variance is centered around the empirical. For `tau_scale>1`, we allow for larger variances **a priori** .
     
 ## Supported Outcome Models
 ### Zero-Inflated Outcomes with `ZDPMix()`
+In this implementation, $f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi) $. Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero.
+
+A Gaussian prior $N_p( \beta_{OLS} , \text{beta_var_scale}\cdot\Sigma )$ is chosen for $\beta$. $\beta_{OLS}$ is a linear regression estimated using observations where $y>0$. $\Sigma$ is a diagonal matrix with estimates parameter variances from this regression along the diagonal. The optional parameter `beta_var_scale` allows the user to make the prior more or less dispersed around the observed data.
+
+A Gaussian prior $N_p(0 , 2\cdot I_p )$. Note that this is actually fairly flat on the logit scale putting substantial prior probability on odds ratios in the range of $.01-.70$.
+
+Sampling for this model involves a Metropolis step to propose a draw of $\gamma$. The optional tuning parameter `\prop_z_sigma` is a length $p$ vector specifying the variance of the Gaussian proposal distribution used in the Metropolis step.
+
+Finally, we place an Inverse Gamma prior on $\phi \sim InvGamma(g_1, b_1)$ on the data variance. The optional argument `phi_y` is a length two vector `phi_y`=$(g_1, b_1)$ that allows the user to specify this parameters.
+
 ### Continuous Outcomes `NDPMix()`
+In this implementation, $f_y(y_i|x_i, \eta_i) = N(x_i'\beta, \phi) $. All the same applies as in the zero-inflated case above.
+
 ### Binary Outcomes `PDPMix()`
+In this implementation, $f_y(y_i|x_i, \eta_i) = Ber( \Phi( x_i'\beta))$, where $\Phi$ is the standard normal CDF. 
 
 ## Posterior Clustering
 ### The Chinese Restaurant Process
 Let $c_{1:n}$ represent a vector of cluster indicators for the $n$ subjects. Since the DP prior induces a clustering on patients, we can make inference on $c_{1:n}$. All functions in the model output posterior cluster assignments.
 
-## Posterior Mode Cluster Assignment
+### Posterior Cluster Assignment
 Adjacency Matrices.
 
-## Predictive Distribution
+## Posterior Predictions
 Polya Urn Scheme for Preditions.
-
-## References

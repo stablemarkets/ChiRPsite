@@ -1,13 +1,13 @@
-name: "cars"
+name: "ChiRP"
 output_dir: "docs"
 navbar:
   title: "ChiRP"
   left:
   - text: "Home"
     href: index.html
-  - text: "Model Descriptions"
-    href: modeldesc.html
   - text: "Examples"
     href: examples.html
+  - text: "Model Descriptions"
+    href: modeldesc.html
 output:
   html_document:
