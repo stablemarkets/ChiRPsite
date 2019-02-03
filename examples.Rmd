@@ -112,7 +112,7 @@ plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color='gray8
 ```
 This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters...thus there is significant uncertainty about with whom they belong.
 
-## Continuous (Gaussian) Regression Example
+## Gaussian Regression Example
 Now let's look at the `NDPMix()` function for implementing a Gaussian regression (no zero inflation).
 ### Sin Wave
 
