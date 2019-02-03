@@ -491,8 +491,8 @@ plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color=&#39;g
                                 ifelse(train_clus$class_mem==&#39;c561&#39;,&#39;green&#39;,&#39;blue&#39;))) )</code></pre>
 <p><img src="examples_files/figure-html/zero_plot2-1.png" width="672" /> This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters…thus there is significant uncertainty about with whom they belong.</p>
 </div>
-<div id="continuous-gaussian-regression-example" class="section level2">
-<h2>Continuous (Gaussian) Regression Example</h2>
+<div id="gaussian-regression-example" class="section level2">
+<h2>Gaussian Regression Example</h2>
 <p>Now let’s look at the <code>NDPMix()</code> function for implementing a Gaussian regression (no zero inflation). ### Sin Wave</p>
 <p>Let’s simulate some wonky data:</p>
 <pre class="r"><code>n &lt;- 200
