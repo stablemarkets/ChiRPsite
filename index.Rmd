@@ -30,6 +30,9 @@ devtools::install_github('stablemarkets/ChiRP')
 library(ChiRP)
 ```
 
+## How to Cite this Package
+Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
+
 ## Contact and Issue Reporting
 Please [report issues](https://github.com/stablemarkets/ChiRP/issues) on GitHub. 
 
