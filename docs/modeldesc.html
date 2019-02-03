@@ -25,6 +25,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="logo.png">
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -408,6 +409,7 @@ div.tocify {
      $head.prepend('<img src=\"logo.png\" style=\"float: right;width: 150px;\"/>')
    });
 </script>
+<p>This section is intended to provide the minimally sufficient set of mathematical details to understand the tuning parameters of <code>ChiRP</code>’s regression functions. If you need a refresher on Dirichlet Processes, check out this <a href="https://stablemarkets.shinyapps.io/dpmixapp/">interactive tutorial</a>.</p>
 <div id="the-generative-model" class="section level2">
 <h2>The Generative Model</h2>
 <p>The <code>ChiRP</code> package implements the following generative <em>Chi</em>nese <em>R</em>estaurant <em>P</em>rocess (CRP) regression mixture. Each regression function takes in training data <span class="math inline">\(D = (y_i, x_i)_{i=1:n}\)</span> (and a test set, if desired), where <span class="math inline">\(x_i\)</span> is a <span class="math inline">\(p \times 1\)</span> covariate vector (including an intercept) and <span class="math inline">\(y_i\)</span> is a scalar outcome observed for <span class="math inline">\(n\)</span> subjects indexed by <span class="math inline">\(i\)</span>. The regression functions returns, for each subject in the training (and testing, if applicable) data set, a posterior distribution of predicted outcome <span class="math inline">\(y\)</span>. It also returns cluster assignments for each subject.</p>
@@ -418,7 +420,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
       G &amp; \sim DP(\alpha G_0)
 \end{aligned}
 \]</span> Above, <span class="math inline">\(f_y\)</span> is the conditional distribution of the outcome. It is governed by parameters <span class="math inline">\(\eta_i\)</span>. Below, we outline three currently supported outcome types: zero-inflated continuous outcomes, continous outcomes, and binary outcomes.</p>
-<p>The joint distribution of the covariates, <span class="math inline">\(f_x\)</span>, is governed by <span class="math inline">\(\theta_i\)</span>. These parameters are distributed according to an unknown distribution <span class="math inline">\(G\)</span>, to which we assign a <a href="https://stablemarkets.shinyapps.io/dpmixapp/">Dirichlet Process</a> (DP) prior. Since draws, <span class="math inline">\(G\)</span>, from a DP are discrete, there are bound to be ties among the subject specific parameters <span class="math inline">\((\eta_i, \theta_i)\)</span>. That is, subjects will tend to cluster together. The number of clusters is not set <strong>a priori</strong>, but rather infinitely many clusters are assumed.</p>
+<p>The joint distribution of the covariates, <span class="math inline">\(f_x\)</span>, is governed by <span class="math inline">\(\theta_i\)</span>. These parameters are distributed according to an unknown distribution <span class="math inline">\(G\)</span>, to which we assign a Dirichlet Process (DP) prior. Since draws, <span class="math inline">\(G\)</span>, from a DP are discrete, there are bound to be ties among the subject specific parameters <span class="math inline">\((\eta_i, \theta_i)\)</span>. That is, subjects will tend to cluster together. The number of clusters is not set <strong>a priori</strong>, but rather infinitely many clusters are assumed.</p>
 <p>This induced clustering partitions complex data into more homogenous subgroups - each with their own set of regression parameters. This allows CRP models to obtain flexible fits where parametric models may fail.</p>
 <p>Package implementation details:</p>
 <ul>
@@ -432,7 +434,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <li>Concentration parameter, <span class="math inline">\(\alpha\)</span>, is estimated with a <span class="math inline">\(Gam(1,1)\)</span> prior.</li>
 <li>For continuous covariates, we use hyperpriors <span class="math inline">\(\lambda \sim N(\mu, var=\sigma^2)\)</span> and <span class="math inline">\(\tau \sim InvGamma(shape=g_2, rate=b_2)\)</span>.</li>
 <li>In an Empirical Bayes fashion, we set <span class="math inline">\(\mu = \bar{x}\)</span> and <span class="math inline">\(\sigma^2 = mu_scale \cdot var(x)\)</span>, where <code>mu_scale</code> is an optional tuning parameter.</li>
-<li>We set <span class="math inline">\(g_2=2\)</span> and <span class="math inline">\(b2 = tau_scale\cdotvar(x)\)</span> for all continous covariates, where <code>tau_scale</code> is an optional tuning parameter. If <code>tau_scale=1</code>, the prior for the variance is centered around the empirical. For <code>tau_scale&gt;1</code>, we allow for larger variances <strong>a priori</strong> .</li>
+<li>We set <span class="math inline">\(g_2=2\)</span> and <span class="math inline">\(b2 = \text{tau_scale} \cdot var(x)\)</span> for all continous covariates, where <code>tau_scale</code> is an optional tuning parameter. If <code>tau_scale=1</code>, the prior for the variance is centered around the empirical. For <code>tau_scale&gt;1</code>, we allow for larger variances <strong>a priori</strong> .</li>
 </ul></li>
 </ul>
 </div>
