@@ -457,7 +457,7 @@ train_clus &lt;- ChiRP::cluster_assign_mode(res$cluster_inds$train)</code></pre>
 <p>The results objects <code>res</code> is a list of two objects. The first, <code>cluster_inds</code> contains two matrices. First, <code>cluster_inds$train</code> is a matrix where each column is a posterior vector of cluster assignment indicators. Each column is the same length as the number of patients. Second, <code>cluster_inds$test</code> is the same matrix, but for the test set observations.</p>
 <p>The function <code>cluster_assign_mode</code> take as input one of the cluster assignment matrices and computes the posterior mode assignment while correcting for label switching.</p>
 <p>Now let’s plot some results:</p>
-<pre class="r"><code>par(mfrow=c(1,3))
+<pre class="r"><code>par(mfrow=c(3,1))
 
 # clustering results
 plot(d_train$X1, d_train$Y, col=as.factor(train_clus$class_mem), pch=20,
@@ -474,7 +474,7 @@ plot(d_test$X1, res$predictions$test[,1000], pch=20, col=&#39;gray&#39;,
      main=&#39;Posterior predictions (gray) with Observed values (black)&#39;)
 points(d_test$X1, res$predictions$test[,999], pch=20, col=&#39;gray&#39;)
 points(d_test$X1, d_test$Y, pch=20, col=&#39;black&#39;)</code></pre>
-<p><img src="examples_files/figure-html/zero_plot1-1.png" width="1440" /></p>
+<p><img src="examples_files/figure-html/zero_plot1-1.png" width="480" /></p>
 <p>Notice that the DP model finds three distinct clusters each with it’s own amount of zero-inflation and other parameters. Because it partitions the complex data into more similar subgroups, the predictive distribution is really similar to the data.</p>
 <p>Instead of doing a hard classification, we can visualize the posterior adjacency matrix which is output by <code>cluster_assign_mode()</code>. This matrix is <span class="math inline">\(n \times n\)</span> - showing how often patient <span class="math inline">\(i\)</span> was clustered with patient <span class="math inline">\(j\)</span>. Taking subjects to be nodes and these proportions to be vertex lengths, we can visualize this using a network:</p>
 <pre class="r"><code># install.packages(igraph)
