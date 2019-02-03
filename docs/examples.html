@@ -474,7 +474,7 @@ plot(d_test$X1, res$predictions$test[,1000], pch=20, col=&#39;gray&#39;,
      main=&#39;Posterior predictions (gray) with Observed values (black)&#39;)
 points(d_test$X1, res$predictions$test[,999], pch=20, col=&#39;gray&#39;)
 points(d_test$X1, d_test$Y, pch=20, col=&#39;black&#39;)</code></pre>
-<p><img src="examples_files/figure-html/zero_plot1-1.png" width="672" /></p>
+<p><img src="examples_files/figure-html/zero_plot1-1.png" width="960" /></p>
 <p>Notice that the DP model finds three distinct clusters each with it’s own amount of zero-inflation and other parameters. Because it partitions the complex data into more similar subgroups, the predictive distribution is really similar to the data.</p>
 <p>Instead of doing a hard classification, we can visualize the posterior adjacency matrix which is output by <code>cluster_assign_mode()</code>. This matrix is <span class="math inline">\(n \times n\)</span> - showing how often patient <span class="math inline">\(i\)</span> was clustered with patient <span class="math inline">\(j\)</span>. Taking subjects to be nodes and these proportions to be vertex lengths, we can visualize this using a network:</p>
 <pre class="r"><code># install.packages(igraph)
@@ -489,7 +489,8 @@ plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color=&#39;g
      vertex.color=ifelse(train_clus$class_mem==&#39;c1&#39;, &#39;black&#39;,
                          ifelse(train_clus$class_mem==&#39;c8&#39;, &#39;red&#39;,
                                 ifelse(train_clus$class_mem==&#39;c561&#39;,&#39;green&#39;,&#39;blue&#39;))) )</code></pre>
-<p><img src="examples_files/figure-html/zero_plot2-1.png" width="672" /> This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters…thus there is significant uncertainty about with whom they belong.</p>
+<p><img src="examples_files/figure-html/zero_plot2-1.png" width="672" /></p>
+<p>This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters…thus there is significant uncertainty about with whom they belong.</p>
 </div>
 <div id="gaussian-regression-example" class="section level2">
 <h2>Gaussian Regression Example</h2>

@@ -72,7 +72,7 @@ The results objects `res` is a list of two objects. The first, `cluster_inds` co
 The function `cluster_assign_mode` take as input one of the cluster assignment matrices and computes the posterior mode assignment while correcting for label switching.
 
 Now let's plot some results:
-```{r zero_plot1, include=T, eval=T}
+```{r zero_plot1, eval=T, fig.height=5, fig.width=10, include=T}
 par(mfrow=c(1,3))
 
 # clustering results
@@ -110,6 +110,7 @@ plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color='gray8
                          ifelse(train_clus$class_mem=='c8', 'red',
                                 ifelse(train_clus$class_mem=='c561','green','blue'))) )
 ```
+
 This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters...thus there is significant uncertainty about with whom they belong.
 
 ## Gaussian Regression Example
