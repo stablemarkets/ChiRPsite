@@ -2,8 +2,12 @@
 title: "Examples"
 output:
   html_document:
-    toc: true
-    toc_float: true
+    includes:
+      in_header: favicon.html
+    toc: yes
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
 <script>
@@ -15,25 +19,186 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,cache=TRUE)
 ```
 
-## R Markdown
+If you do not yet have `ChiRP` installed, you can do so using `install_github()` from `devtools` package:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r install, include=T, eval=T}
+#devtools::install_github('stablemarkets/ChiRP')
+library(ChiRP)
 ```
 
-## Including Plots
+## Zero-Inflated Regression Example
+Here we'll demonstrate how to train and predict using a Chinese Restaurant Process (CRP) mixture of zero-inflated regressions. Let's generate some fake data first.
 
-You can also embed plots, for example:
+```{r zero_data_gen1, include=T, eval=T}
+set.seed(1)
+n<-200 ## generate from clustered, skewed, data distribution
+X11 <- rnorm(n = n, mean = 10, sd = 3)
+X12 <- rnorm(n = n, mean = 0, sd = 2)
+X13 <- rnorm(n = n, mean = -10, sd = 4)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Y1 <- rnorm(n = n, mean = 100 + .5*X11, 20)*(1-rbinom(n, 1, prob = pnorm( -10 + 1*X11 ) ))
+Y2 <- rnorm(n = n, mean = 200 + 1*X12, 30)*(1-rbinom(n, 1, prob = pnorm( 1 + .05*X12 ) ))
+Y3 <- rnorm(n = n, mean = 300 + 2*X13, 40)*(1-rbinom(n, 1, prob = pnorm( -3 -.2*X13 ) ))
+
+d <- data.frame(X1=c(X11, X12, X13), Y = c(Y1, Y2, Y3))
+
+par(mfrow=c(1,2))
+plot(d$X1, d$Y, pch=20)
+hist(d$Y)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Let's randomly partition the data into training and testing, train a model, and analyze the results. We run `iter-burnin`$=1000$ post-burnin iterations. I choose a fairly flat prior for my data variance (`phi_y` - See the model details for an explanation).  I initialize the sampler with `init_k=5` clusters.
+
+```{r zero_data_gen2, include=T, eval=T}
+ids <- sample(1:600, size = 500, replace = F )
+
+d$X1 <- scale(d$X1)
+
+d_train <- d[ids,]
+d_test <- d[-ids, ]
+
+res <- ChiRP::ZDPMix(d_train = d_train, d_test = d_test, formula = Y ~ X1,
+                     burnin=2000, iter=3000, init_k = 5, phi_y = c(10, 10000))
+
+# compute the posterior model cluster assignment
+train_clus <- ChiRP::cluster_assign_mode(res$cluster_inds$train)
+```
+
+The results objects `res` is a list of two objects. The first, `cluster_inds` contains two matrices. First, `cluster_inds$train` is a matrix where each column is a posterior vector of cluster assignment indicators. Each column is the same length as the number of patients. Second, `cluster_inds$test` is the same matrix, but for the test set observations. 
+
+The function `cluster_assign_mode` take as input one of the cluster assignment matrices and computes the posterior mode assignment while correcting for label switching.
+
+Now let's plot some results:
+```{r zero_plot1, include=T, eval=T}
+par(mfrow=c(1,3))
+
+# clustering results
+plot(d_train$X1, d_train$Y, col=as.factor(train_clus$class_mem), pch=20,
+     main='Posterior Mode Cluster Assignment')
+
+# in-sample predictions
+plot(d_train$X1, res$predictions$train[,1000], pch=20, col='gray',
+     main='Posterior predictions (gray) with Observed values (black)')
+points(d_train$X1, res$predictions$train[,999], pch=20, col='gray')
+points(d_train$X1, d_train$Y, pch=20, col='black')
+
+# out-of-sample test set predictions
+plot(d_test$X1, res$predictions$test[,1000], pch=20, col='gray',
+     main='Posterior predictions (gray) with Observed values (black)')
+points(d_test$X1, res$predictions$test[,999], pch=20, col='gray')
+points(d_test$X1, d_test$Y, pch=20, col='black')
+```
+
+Notice that the DP model finds three distinct clusters each with it's own amount of zero-inflation and other parameters. Because it partitions the complex data into more similar subgroups, the predictive distribution is really similar to the data.
+
+Instead of doing a hard classification, we can visualize the posterior adjacency matrix which is output by `cluster_assign_mode()`. This matrix is $n \times n$ - showing how often patient $i$ was clustered with patient $j$. Taking subjects to be nodes and these proportions to be vertex lengths, we can visualize this using a network:
+
+```{r zero_plot2, include=T, eval=T}
+# install.packages(igraph)
+library(igraph)
+
+par(mfrow=c(1,1))
+
+g <- graph_from_adjacency_matrix(train_clus$adjmat, diag = F,mode='undirected', weighted=T)
+coords <- layout.auto(g)
+
+plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color='gray87',edge.width=1,
+     vertex.color=ifelse(train_clus$class_mem=='c1', 'black',
+                         ifelse(train_clus$class_mem=='c8', 'red',
+                                ifelse(train_clus$class_mem=='c561','green','blue'))) )
+```
+This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters...thus there is significant uncertainty about with whom they belong.
+
+## Continuous (Gaussian) Regression Example
+Now let's look at the `NDPMix()` function for implementing a Gaussian regression (no zero inflation).
+### Sin Wave
+
+Let's simulate some wonky data:
+```{r sin_sim, include=T, eval=T}
+n <- 200
+set.seed(3)
+
+# training 
+x<-seq(1,10*pi, length.out = n) # confounder
+y<-rnorm( n = length(x), sin(.5*x), .07*x)
+d <- data.frame(x=x, y=y)
+d$x <- scale(d$x)
+plot(d$x,d$y, pch=20)
+
+#test
+d_test <- data.frame(x=seq(1.5,2,.01))
+```
+
+The syntax for `NDPMix()` is analagous to `ZDPMix()`:
+```{r sin_sim1, include=T, eval=T}
+
+set.seed(1)
+NDP_res<-NDPMix(d_train = d, d_test = d_test,
+                formula = y ~ x,
+                burnin=4000, iter = 5000,
+                phi_y = c(5,10), beta_var_scale = 10000, 
+                init_k = 10, mu_scale = 2, tau_scale = .001)
+
+tt <- cluster_assign_mode(NDP_res$cluster_inds$train)
+
+plot(d$x, d$y, col=as.factor(tt$class_mem),pch=20 )
+```
+
+The clustering the DP found is really interesting. Notice we initialize with `init_k=10` clusters, but the DP detects fewer homogenous subgroups. In this setting, clustering may just a means to an end: we care about the clustering because we want good predictions.
+
+So let's see how the predictions do:
+```{r sin_sim2, include=T, eval=T}
+par(mfrow=c(1,1))
+## plot observed data
+plot(d$x, d$y, pch=20, ylim=c(-10,10), xlim=c(min(d$x), 2))
+
+# plot 100 posterior predictive draws on the training set
+for(i in 900:1000){
+  points(d$x, NDP_res$predictions$train[,i], col='gray', pch=20)  
+}
+points(d$x, d$y, pch=20) # overlay data
+
+# plot posterior predictive mean on training.
+points(d$x, rowMeans(NDP_res$predictions$train), col='blue', pch=20)
+
+# plot posterior predictive mean on test set.
+points(d_test$x, rowMeans(NDP_res$predictions$test), col='red', pch=20)
+legend('topleft', legend = c('Training Data','Predictive Draws',
+                             'Predictive Mean (training)','Predictive Mean (test)' ),
+       col=c('black','gray','blue','red'), pch=c(20,20,20,20))
+```
+
+### Iris
+
+One more clustering example using the Iris dataset.
+```{r iris_sim, include=T, eval=T}
+# it helps to normalize continuous variables.
+iris <- iris
+iris$Sepal.Width <- scale(iris$Sepal.Width)
+iris$Petal.Width <- scale(iris$Petal.Width)
+iris$Petal.Length <- scale(iris$Petal.Length)
+iris$Sepal.Length <- scale(iris$Sepal.Length)
+
+# run DP Gaussian
+set.seed(3)
+iris_res<-NDPMix(d_train = iris, d_test = iris,
+                  formula = Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width,
+                  burnin=3000, iter = 4000,phi_y = c(5,1),
+                  beta_var_scale = 10000, init_k=5, mu_scale = 1, tau_scale = .5)
+
+# get posterior mode clustering
+clust_res <- ChiRP::cluster_assign_mode(iris_res$cluster_inds$train)
+
+
+par(mfrow=c(1,2))
+plot(iris$Petal.Width, iris$Sepal.Length, col=as.factor(clust_res$class_mem),pch=20,
+     main='Colors = Clusters found by model')
+plot(iris$Petal.Width, iris$Sepal.Length, col=as.factor(iris$Species),pch=20,
+     main='Colors = True Species Indicator')
+```
+
+## Probit Regression Example
+

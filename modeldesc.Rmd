@@ -4,6 +4,8 @@ output:
   html_document:
     toc: true
     toc_float: true
+    includes:
+      in_header: "favicon.html" 
 ---
 
 <script>
@@ -17,6 +19,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+This section is intended to provide the minimally sufficient set of mathematical details to understand the tuning parameters of `ChiRP`'s regression functions. If you need a refresher on Dirichlet Processes, check out this [interactive tutorial](https://stablemarkets.shinyapps.io/dpmixapp/).
 
 ## The Generative Model
 The `ChiRP` package implements the following generative *Chi*nese *R*estaurant *P*rocess (CRP) regression mixture. Each regression function takes in training data $D = (y_i, x_i)_{i=1:n}$ (and a test set, if desired), where $x_i$ is a $p \times 1$ covariate vector (including an intercept) and $y_i$ is a scalar outcome observed for $n$ subjects indexed by $i$. The regression functions returns, for each subject in the training (and testing, if applicable) data set, a posterior distribution of predicted outcome $y$. It also returns cluster assignments for each subject.
@@ -31,7 +34,7 @@ y_i | x_i, \eta_i & \sim f_y(y_i|x_i, \eta_i) \\
 $$
 Above, $f_y$ is the conditional distribution of the outcome. It is governed by parameters $\eta_i$. Below, we outline three currently supported outcome types: zero-inflated continuous outcomes, continous outcomes, and binary outcomes.
 
-The joint distribution of the covariates, $f_x$, is governed by $\theta_i$. These parameters are distributed according to an unknown distribution $G$, to which we assign a [Dirichlet Process](https://stablemarkets.shinyapps.io/dpmixapp/) (DP) prior. Since draws, $G$, from a DP are discrete, there are bound to be ties among the subject specific parameters $(\eta_i, \theta_i)$. That is, subjects will tend to cluster together. The number of clusters is not set **a priori**, but rather infinitely many clusters are assumed.
+The joint distribution of the covariates, $f_x$, is governed by $\theta_i$. These parameters are distributed according to an unknown distribution $G$, to which we assign a Dirichlet Process (DP) prior. Since draws, $G$, from a DP are discrete, there are bound to be ties among the subject specific parameters $(\eta_i, \theta_i)$. That is, subjects will tend to cluster together. The number of clusters is not set **a priori**, but rather infinitely many clusters are assumed.
 
 This induced clustering partitions complex data into more homogenous subgroups - each with their own set of regression parameters. This allows CRP models to obtain flexible fits where parametric models may fail.
 
@@ -44,7 +47,7 @@ Package implementation details:
     + Concentration parameter, $\alpha$, is estimated with a $Gam(1,1)$ prior.
     + For continuous covariates, we use hyperpriors $\lambda \sim N(\mu, var=\sigma^2)$ and $\tau \sim InvGamma(shape=g_2, rate=b_2)$.
     + In an Empirical Bayes fashion, we set $\mu = \bar{x}$ and $\sigma^2 = mu_scale \cdot var(x)$, where `mu_scale` is an optional tuning parameter.
-    + We set $g_2=2$ and $b2 = tau_scale\cdotvar(x)$ for all continous covariates, where `tau_scale` is an optional tuning parameter. If `tau_scale=1`, the prior for the variance is centered around the empirical. For `tau_scale>1`, we allow for larger variances **a priori** .
+    + We set $g_2=2$ and $b2 = \text{tau_scale} \cdot var(x)$ for all continous covariates, where `tau_scale` is an optional tuning parameter. If `tau_scale=1`, the prior for the variance is centered around the empirical. For `tau_scale>1`, we allow for larger variances **a priori** .
     
 ## Supported Outcome Models
 ### Zero-Inflated Outcomes with `ZDPMix()`
