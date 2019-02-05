@@ -412,8 +412,8 @@ div.tocify {
 <p>If you do not yet have <code>ChiRP</code> installed, you can do so using <code>install_github()</code> from <code>devtools</code> package:</p>
 <pre class="r"><code>#devtools::install_github(&#39;stablemarkets/ChiRP&#39;)
 library(ChiRP)</code></pre>
-<div id="zero-inflated-regression-example" class="section level2">
-<h2>Zero-Inflated Regression Example</h2>
+<div id="zero-inflated-regression" class="section level2">
+<h2>Zero-Inflated Regression</h2>
 <p>Here we’ll demonstrate how to train and predict using a Chinese Restaurant Process (CRP) mixture of zero-inflated regressions. Let’s generate some fake data first.</p>
 <pre class="r"><code>set.seed(1)
 n&lt;-200 ## generate from clustered, skewed, data distribution
@@ -492,8 +492,8 @@ plot(g, layout=coords,vertex.size=5, vertex.label=NA,axes = F, edge.color=&#39;g
 <p><img src="examples_files/figure-html/zero_plot2-1.png" width="672" /></p>
 <p>This is helpful for visualizing the uncertainty in posterior cluster assignments. Points between two clumps represent subjects who frequently switched between the two clusters…thus there is significant uncertainty about with whom they belong.</p>
 </div>
-<div id="gaussian-regression-example" class="section level2">
-<h2>Gaussian Regression Example</h2>
+<div id="gaussian-regression" class="section level2">
+<h2>Gaussian Regression</h2>
 <p>Now let’s look at the <code>NDPMix()</code> function for implementing a Gaussian regression (no zero inflation).</p>
 <div id="sin-wave" class="section level3">
 <h3>Sin() Wave</h3>
@@ -593,8 +593,106 @@ plot(iris$Petal.Width, iris$Sepal.Length, col=as.factor(iris$Species),pch=20,
 <p><img src="examples_files/figure-html/iris_sim-1.png" width="672" /></p>
 </div>
 </div>
-<div id="probit-regression-example" class="section level2">
-<h2>Probit Regression Example</h2>
+<div id="logit-regression-example" class="section level2">
+<h2>Logit Regression Example</h2>
+<p>In this section we look at an example using <code>PDPMix()</code> - a Chinese Restaurant Process mixture of probit regressions. Let’s simulate binary outcomes from two distinct clusters</p>
+<pre class="r"><code>set.seed(1)
+n&lt;-1000 # simulate 1000 subjects
+
+# Cluster 1: 5 continuous covariates with mean 5, variance 5
+x1 &lt;- replicate(2,  rnorm(n/2, 10, 5) ) 
+
+# Cluster 2: 5 continuous covariates with mean 5, variance 5
+x2 &lt;- replicate(2,  rnorm(n/2, -10, 5))
+
+# outcome for both clusters
+y &lt;- numeric(length = n)
+y[1:500] &lt;- rbinom(500, 1, pnorm(-5 + x1 %*% matrix(c(-2,2), ncol=1) )  )
+y[501:1000] &lt;- rbinom(500, 1, pnorm(5 + x2 %*% matrix(c(2,-2), ncol=1)  ) )
+
+# combine into data.frame
+d &lt;- data.frame(rbind(x1,x2), y)
+
+# normalize covariates...helps for numerical stability.
+d$X1 &lt;- scale(d$X1)
+d$X2 &lt;- scale(d$X2)
+
+head(d)</code></pre>
+<pre><code>##          X1        X2 y
+## 1 0.6052816 0.9363886 1
+## 2 0.9648403 0.7707322 0
+## 3 0.5124401 0.3783095 0
+## 4 1.5913907 0.9071639 0
+## 5 1.0295818 1.3411743 1
+## 6 0.5191689 1.6078590 1</code></pre>
+<p>Now let’s run the regresison. For the logistic regression parameters, I use null centered prior for my coefficient vector <code>beta_prior_mean = rep(0,6)</code>. Prior variance around this empirical mean is fairly wide (on an odds ratio scale) priors for each parameter <code>beta_prior_var = rep(2, 6)</code>. All continous covariates are widely centered around empirical means: <code>tau_scale = 3</code>, <code>mu_scale = 3</code>. See the Model Description page for detailed explanations behind these parameters. Roughly speaking, these parameters control how far new cluster parameters can be dispersed around the empirical parameters. If they are too narrow, new occupied clusters will be introduced too often and the model may overfit. If they are too wide, new occupied clusters will not form often enough and the model fit will be bad.</p>
+<p>I take a total of <code>iter=2000</code> posterior draws but toss the first <code>burnin=1000</code> draws.</p>
+<pre class="r"><code>set.seed(100)
+
+# split data into training (800 obs) and testing (200 obs)
+test_ids &lt;- sample(1:1000, 200, F)
+d_test &lt;- d[test_ids, ]
+d_train &lt;- d[-test_ids, ]
+
+probit_res &lt;- PDPMix(d_train = d_train, d_test = d_test, 
+                     formula = y ~ X1 + X2,
+                     burnin = 4000, iter = 5000, 
+                     beta_prior_var = rep(3, 3), # fairly flat priors
+                     beta_prior_mean = rep(0,3), # null centered priors
+                     prop_sigma_b = diag(rep(.001, 3)) , # proposal covariance 
+                     init_k = 5, tau_scale = 3, mu_scale = 3)</code></pre>
+<pre><code>## Iteration 2 of 5000 (burn-in) 
+## Iteration 501 of 5000 (burn-in)
+## Iteration 1001 of 5000 (burn-in)
+## Iteration 1501 of 5000 (burn-in)
+## Iteration 2001 of 5000 (burn-in)
+## Iteration 2501 of 5000 (burn-in)
+## Iteration 3001 of 5000 (burn-in)
+## Iteration 3501 of 5000 (burn-in)
+## Iteration 4001 of 5000 (sampling) 
+## Iteration 4501 of 5000 (sampling) 
+## Sampling Complete.</code></pre>
+<pre class="r"><code>post_pred_train &lt;- rowMeans(probit_res$predictions$train) 
+post_pred_test &lt;- rowMeans(probit_res$predictions$test) </code></pre>
+<p>First let’s do some posterior predictive checks against the data to assess model fit.</p>
+<pre class="r"><code>boxplot(post_pred_train ~ d_train$y)</code></pre>
+<p><img src="examples_files/figure-html/logit3-1.png" width="672" /> This looks okay. The events are well-separated in the training set. Let’s look at the MCMC chain for the marginal probability of the event…it oscillates around the marginal probability observed in the training data (indicated by the red line).</p>
+<pre class="r"><code>plot(colMeans(probit_res$predictions$train), type=&#39;l&#39; )
+abline(h=mean(d_train$y), col=&#39;red&#39;)</code></pre>
+<p><img src="examples_files/figure-html/logit4-1.png" width="672" /> This indicates an okay fit…should other sensible posterior predictive checks should be done as well. E.g. summarize observed and posterior mean probabilities within levels of covariates (deciles for numeric ones) is also sensible.</p>
+<p>Let’s use the <code>pROC</code> package to plot the ROC curve in the training and testing dataset. This is a fully Bayesian method, so we actually have 1000 posterior ROC curves - yielding 1000 posterior AUCs, sensitivities, and specificities, etc. Let’s go ahead and compute the ROC associated with the posterior mean probability for each subject.</p>
+<pre class="r"><code>library(pROC)
+
+par(mfrow=c(1,2))
+## plot ROC curves (posterior draws and mean) for training set 
+plot.roc(d_train$y, post_pred_train,
+         main=&#39;ROC - CRP logistic&#39;)
+## plot ROC curves (posterior draws and mean) for test set 
+lines.roc(d_test$y, post_pred_test, col=&#39;red&#39;)
+legend(&#39;bottomright&#39;,legend=c(&#39;Training&#39;,&#39;Test&#39;), col=c(&#39;black&#39;, &#39;red&#39;), lty=c(1,1))
+
+
+## get ROC from parametric logistic regresison for comparison
+param_mod &lt;- glm(data = d_train, formula = y ~ X1 + X2 + X1*X2, 
+                 family = binomial(&#39;logit&#39;))
+
+plot.roc(d_train$y, 
+         predict(param_mod,newdata = d_train, type = &#39;response&#39;),
+         main=&#39;ROC - Parametric logistic&#39;)
+lines.roc(d_test$y, 
+          predict(param_mod,newdata = d_test, type = &#39;response&#39;), 
+          col=&#39;red&#39;)
+legend(&#39;bottomright&#39;,legend=c(&#39;Training&#39;,&#39;Test&#39;), col=c(&#39;black&#39;, &#39;red&#39;), lty=c(1,1))</code></pre>
+<p><img src="examples_files/figure-html/logit5-1.png" width="672" /></p>
+<p>Let’s plot the posterior distribution for AUC.</p>
+<pre class="r"><code>auc_post_dist &lt;- numeric(length = 1000) 
+for(i in 1:1000){
+  auc_post_dist[i] &lt;- pROC::auc(d_train$y, probit_res$predictions$train[,i])
+}
+
+hist(auc_post_dist, main=&#39;Posterior distribution for AUC&#39;, xlab=&#39;AUC draws&#39;)
+abline(v=mean(auc_post_dist), col=&#39;red&#39;, lwd=3) # posterior mean AUC</code></pre>
+<p><img src="examples_files/figure-html/logit6-1.png" width="672" /></p>
 </div>
 
 
