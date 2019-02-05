@@ -595,7 +595,7 @@ plot(iris$Petal.Width, iris$Sepal.Length, col=as.factor(iris$Species),pch=20,
 </div>
 <div id="logit-regression-example" class="section level2">
 <h2>Logit Regression Example</h2>
-<p>In this section we look at an example using <code>PDPMix()</code> - a Chinese Restaurant Process mixture of probit regressions. Let’s simulate binary outcomes from two distinct clusters</p>
+<p>In this section we look at an example using <code>PDPMix()</code> - a Chinese Restaurant Process mixture of logistic regressions. Let’s simulate binary outcomes from two distinct clusters</p>
 <pre class="r"><code>set.seed(1)
 n&lt;-1000 # simulate 1000 subjects
 
@@ -634,7 +634,7 @@ test_ids &lt;- sample(1:1000, 200, F)
 d_test &lt;- d[test_ids, ]
 d_train &lt;- d[-test_ids, ]
 
-probit_res &lt;- PDPMix(d_train = d_train, d_test = d_test, 
+logit_res &lt;- PDPMix(d_train = d_train, d_test = d_test, 
                      formula = y ~ X1 + X2,
                      burnin = 4000, iter = 5000, 
                      beta_prior_var = rep(3, 3), # fairly flat priors
@@ -652,14 +652,16 @@ probit_res &lt;- PDPMix(d_train = d_train, d_test = d_test,
 ## Iteration 4001 of 5000 (sampling) 
 ## Iteration 4501 of 5000 (sampling) 
 ## Sampling Complete.</code></pre>
-<pre class="r"><code>post_pred_train &lt;- rowMeans(probit_res$predictions$train) 
-post_pred_test &lt;- rowMeans(probit_res$predictions$test) </code></pre>
+<pre class="r"><code>post_pred_train &lt;- rowMeans(logit_res$predictions$train) 
+post_pred_test &lt;- rowMeans(logit_res$predictions$test) </code></pre>
 <p>First let’s do some posterior predictive checks against the data to assess model fit.</p>
 <pre class="r"><code>boxplot(post_pred_train ~ d_train$y)</code></pre>
-<p><img src="examples_files/figure-html/logit3-1.png" width="672" /> This looks okay. The events are well-separated in the training set. Let’s look at the MCMC chain for the marginal probability of the event…it oscillates around the marginal probability observed in the training data (indicated by the red line).</p>
-<pre class="r"><code>plot(colMeans(probit_res$predictions$train), type=&#39;l&#39; )
+<p><img src="examples_files/figure-html/logit3-1.png" width="672" /></p>
+<p>This looks okay. The events are well-separated in the training set. Let’s look at the MCMC chain for the marginal probability of the event…it oscillates around the marginal probability observed in the training data (indicated by the red line).</p>
+<pre class="r"><code>plot(colMeans(logit_res$predictions$train), type=&#39;l&#39; )
 abline(h=mean(d_train$y), col=&#39;red&#39;)</code></pre>
-<p><img src="examples_files/figure-html/logit4-1.png" width="672" /> This indicates an okay fit…should other sensible posterior predictive checks should be done as well. E.g. summarize observed and posterior mean probabilities within levels of covariates (deciles for numeric ones) is also sensible.</p>
+<p><img src="examples_files/figure-html/logit4-1.png" width="672" /></p>
+<p>This indicates an okay fit…should other sensible posterior predictive checks should be done as well. E.g. summarize observed and posterior mean probabilities within levels of covariates (deciles for numeric ones) is also sensible.</p>
 <p>Let’s use the <code>pROC</code> package to plot the ROC curve in the training and testing dataset. This is a fully Bayesian method, so we actually have 1000 posterior ROC curves - yielding 1000 posterior AUCs, sensitivities, and specificities, etc. Let’s go ahead and compute the ROC associated with the posterior mean probability for each subject.</p>
 <pre class="r"><code>library(pROC)
 
@@ -687,7 +689,7 @@ legend(&#39;bottomright&#39;,legend=c(&#39;Training&#39;,&#39;Test&#39;), col=c(
 <p>Let’s plot the posterior distribution for AUC.</p>
 <pre class="r"><code>auc_post_dist &lt;- numeric(length = 1000) 
 for(i in 1:1000){
-  auc_post_dist[i] &lt;- pROC::auc(d_train$y, probit_res$predictions$train[,i])
+  auc_post_dist[i] &lt;- pROC::auc(d_train$y, logit_res$predictions$train[,i])
 }
 
 hist(auc_post_dist, main=&#39;Posterior distribution for AUC&#39;, xlab=&#39;AUC draws&#39;)
