@@ -443,7 +443,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <div id="zero-inflated-outcomes-with-zdpmix" class="section level3">
 <h3>Zero-Inflated Outcomes with <code>ZDPMix()</code></h3>
 <p>In this implementation, <span class="math display">\[f_y(y_i|x_i, \eta_i) = \pi(x_i&#39;\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i&#39;\gamma_i) ) \cdot N(x_i&#39;\beta, \phi)\]</span></p>
-<p>Where <span class="math inline">\(\pi(x_i&#39;\gamma_i) = expit(x_i&#39;\gamma_i)\)</span> is the probability of the outcome being zero. See this <a href="https://arxiv.org/abs/1810.09494">paper</a> for methodological details.</p>
+<p>Where <span class="math inline">\(\pi(x_i&#39;\gamma_i) = expit(x_i&#39;\gamma_i)\)</span> is the probability of the outcome being zero and <span class="math inline">\(\delta_0(y)\)</span> is the point-mass distribution at <span class="math inline">\(0\)</span>. See this <a href="https://arxiv.org/abs/1810.09494">paper</a> for methodological details.</p>
 <p>The function call looks like this:</p>
 <pre class="r"><code>zDP_res&lt;-ZDPMix(d_train = d, ## training data.frame() object
                 d_test = dt, ## test data.frame() object 
@@ -462,7 +462,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
 </div>
 <div id="binary-outcomes-pdpmix" class="section level3">
 <h3>Binary Outcomes <code>PDPMix()</code></h3>
-<p>In this implementation, <span class="math inline">\(f_y(y_i|x_i, \eta_i) = Ber( \Phi( x_i&#39;\beta))\)</span>, where <span class="math inline">\(\Phi\)</span> is the standard normal CDF.</p>
+<p>In this implementation, <span class="math inline">\(f_y(y_i|x_i, \eta_i) = Ber( expit( x_i&#39;\beta))\)</span>, where <span class="math inline">\(expit()\)</span> is the inverse logistic function.</p>
 </div>
 </div>
 <div id="posterior-clustering" class="section level2">
@@ -474,7 +474,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
                                                                  \frac{\alpha}{\alpha + i -1} \int p(D_i | \omega ) dG_0(\omega) &amp; \text{for } k \not \in c^{(t)}_{1:i-1}  \end{cases}  \]</span></p>
 <p>These equations characterize the Chinese Restaurant Process posterior. At every Gibbs iterations, <span class="math inline">\(t\)</span>, a subject’s cluster assignment can be updated to an existing cluster with probability proportional to the number of subjects in that cluster times how well well subject <span class="math inline">\(i\)</span>’s data, <span class="math inline">\(D_i\)</span>, fits the likelihood under that cluster’s parameters. However, a subject can also be assigned to a new cluster with probability proportional to <span class="math inline">\(\alpha\)</span> times how well <span class="math inline">\(D_i\)</span> fits the likelihood under a new set of parameters drawn from the prior. If a patient’s observed data is very unique and doesn’t fit well with existing parameters, a new cluster is likely to open up to accomodate this subject. However, for large <span class="math inline">\(n\)</span>, as <span class="math inline">\(i\rightarrow n\)</span> the probability of a new cluster opening up becomes less and less likely. Thus, the model naturally prevents overfitting (i.e. every subject getting assigned to their own, singleton cluster).</p>
 <p>The functions <code>ZDPMix</code>,<code>NDPMix</code>, and <code>PDPMix</code> all output a <span class="math inline">\(n \times T\)</span> matrix for <span class="math inline">\(T\)</span> post-burnin posterior draws. This matrix gives the cluster label for each subject, at each iteration. This is done for both training and testing datasets. These matrices are stored in the function output as <code>cluster_inds$train</code> and <code>cluster_inds$test</code>.</p>
-<p><code>ChiRP</code> makes posterior inference via MCMC sampling as in Neal 2000. We introduce latent cluster indicators <span class="math inline">\(c_{i:n}\)</span> and alternative between updating these assignments conditional on parameters <span class="math inline">\(\omega_{i:n}}\)</span> and then updating parameters <span class="math inline">\(\omega_{i:n}\)</span> conditional on assignments.</p>
+<p><code>ChiRP</code> makes posterior inference via MCMC sampling as in Neal 2000. We introduce latent cluster indicators <span class="math inline">\(c_{i:n}\)</span> and alternative between updating these assignments conditional on parameters <span class="math inline">\(\omega_{i:n}\)</span> and then updating parameters <span class="math inline">\(\omega_{i:n}\)</span> conditional on assignments.</p>
 </div>
 <div id="posterior-mode-clustering" class="section level3">
 <h3>Posterior Mode Clustering</h3>
@@ -486,7 +486,7 @@ y_i | x_i, \eta_i &amp; \sim f_y(y_i|x_i, \eta_i) \\
 <h2>Posterior Predictions</h2>
 <p>Having observed training data <span class="math inline">\(D\)</span>, we may wish to predict an outcome <span class="math inline">\(\tilde y\)</span> given testing covariates <span class="math inline">\(\tilde x \in \mathcal R^p\)</span>. Given <span class="math inline">\(T\)</span> posterior draws of <span class="math inline">\(\omega_{1:n}^{(t)}\)</span>, indexed by <span class="math inline">\(t\)</span>, <code>ChiRP</code> implements a Monte Carolo procedure to obtain <span class="math inline">\(T\)</span> draws from the conditional outcome distribution of test observation with covariates <span class="math inline">\(\tilde x\)</span>.</p>
 <ul>
-<li>Draw $c Categorical( p(x | _1^{(t)}) , p(x | _2^{(t)}, , p(x | <em>n^{(t)}), p(x | </em>{new}) ) $, where <span class="math inline">\(\omega_{new}\)</span> is a new set of cluster parameters drawn from the prior <span class="math inline">\(G_0\)</span>.</li>
+<li>Draw <span class="math inline">\(\tilde c \sim Categorical( p(\tilde x | \omega_1^{(t)}) , p(\tilde x | \omega_2^{(t)}, \dots , p(\tilde x | \omega_n^{(t)}), p(\tilde x | \omega_{new}) )\)</span>, where <span class="math inline">\(\omega_{new}\)</span> is a new set of cluster parameters drawn from the prior <span class="math inline">\(G_0\)</span>.</li>
 <li>Set <span class="math inline">\(\tilde \omega\)</span> to be the parameter corresponding to <span class="math inline">\(\tilde c\)</span> drawn above.</li>
 <li>Finally, draw <span class="math inline">\(\tilde y^{(t)} \sim f_y( y | \tilde x, \tilde \omega)\)</span> from the generative model defined at the top of this page.</li>
 </ul>
