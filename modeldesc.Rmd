@@ -54,7 +54,7 @@ Package implementation details:
 In this implementation, 
 \[f_y(y_i|x_i, \eta_i) = \pi(x_i'\gamma_i)\cdot \delta_0(y) + (1 - \pi(x_i'\gamma_i) ) \cdot N(x_i'\beta, \phi)\] 
 
-Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero. See this [paper](https://arxiv.org/abs/1810.09494) for methodological details.
+Where $\pi(x_i'\gamma_i) = expit(x_i'\gamma_i)$ is the probability of the outcome being zero and $\delta_0(y)$ is the point-mass distribution at $0$. See this [paper](https://arxiv.org/abs/1810.09494) for methodological details.
 
 The function call looks like this:
 
@@ -79,7 +79,7 @@ Finally, we place an Inverse Gamma prior on $\phi \sim InvGamma(g_1, b_1)$ on th
 In this implementation, $f_y(y_i|x_i, \eta_i) = N(x_i'\beta, \phi)$. All the same applies as in the zero-inflated case above.
 
 ### Binary Outcomes `PDPMix()`
-In this implementation, $f_y(y_i|x_i, \eta_i) = Ber( \Phi( x_i'\beta))$, where $\Phi$ is the standard normal CDF. 
+In this implementation, $f_y(y_i|x_i, \eta_i) = Ber( expit( x_i'\beta))$, where $expit()$ is the inverse logistic function.
 
 ## Posterior Clustering
 ### The Chinese Restaurant Posterior
@@ -92,7 +92,7 @@ These equations characterize the Chinese Restaurant Process posterior. At every 
 
 The functions `ZDPMix`,`NDPMix`, and `PDPMix` all output a $n \times T$ matrix for $T$ post-burnin posterior draws. This matrix gives the cluster label for each subject, at each iteration. This is done for both training and testing datasets. These matrices are stored in the function output as `cluster_inds$train` and `cluster_inds$test`.
 
-`ChiRP` makes posterior inference via MCMC sampling as in Neal 2000.  We introduce latent cluster indicators $c_{i:n}$ and alternative between updating these assignments conditional on parameters $\omega_{i:n}}$ and then updating parameters $\omega_{i:n}$ conditional on assignments.
+`ChiRP` makes posterior inference via MCMC sampling as in Neal 2000.  We introduce latent cluster indicators $c_{i:n}$ and alternative between updating these assignments conditional on parameters $\omega_{i:n}$ and then updating parameters $\omega_{i:n}$ conditional on assignments.
 
 ### Posterior Mode Clustering
 The function `cluster_assign_mode` takes as input either `cluster_inds$train` or `cluster_inds$test` and computes the posterior mode cluster assignment associated with each subject while accounting for label switching. See [this paper](https://arxiv.org/abs/1810.09494) for a more precise reference on the deterministic relabeling procedure implemented in `ChiRP`.
@@ -102,7 +102,7 @@ In short, we use the fact that at every Gibbs iteration we can construct an $n\t
 ## Posterior Predictions
 Having observed training data $D$, we may wish to predict an outcome $\tilde y$ given testing covariates $\tilde x \in \mathcal R^p$. Given $T$ posterior draws of $\omega_{1:n}^{(t)}$, indexed by $t$, `ChiRP` implements a Monte Carolo procedure to obtain $T$ draws from the conditional outcome distribution of test observation with covariates $\tilde x$.
 
-* Draw $\tilde c \sim Categorical( p(\tilde x | \omega_1^{(t)})  ,  p(\tilde x | \omega_2^{(t)}, \dots ,  p(\tilde x | \omega_n^{(t)}), p(\tilde x | \omega_{new}) ) $, where $\omega_{new}$ is a new set of cluster parameters drawn from the prior $G_0$.
+* Draw $\tilde c \sim Categorical( p(\tilde x | \omega_1^{(t)})  ,  p(\tilde x | \omega_2^{(t)}, \dots ,  p(\tilde x | \omega_n^{(t)}), p(\tilde x | \omega_{new}) )$, where $\omega_{new}$ is a new set of cluster parameters drawn from the prior $G_0$.
 * Set $\tilde \omega$ to be the parameter corresponding to $\tilde c$ drawn above.
 * Finally, draw $\tilde y^{(t)} \sim f_y( y | \tilde x, \tilde \omega)$ from the generative model defined at the top of this page.
 
