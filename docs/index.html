@@ -322,6 +322,10 @@ $(document).ready(function () {
 devtools::install_github(&#39;stablemarkets/ChiRP&#39;)
 library(ChiRP)</code></pre>
 </div>
+<div id="what-are-chinese-restaurant-process-models" class="section level2">
+<h2>What Are Chinese Restaurant Process Models?</h2>
+<p>CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don’t be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparmatric method. Please see the examples page for uses.</p>
+</div>
 <div id="how-to-cite-this-package" class="section level2">
 <h2>How to Cite this Package</h2>
 <p>Since this package was written in conjunction with <a href="https://arxiv.org/abs/1810.09494">this paper</a>, please cite it when using this package. Thank you!</p>
@@ -330,6 +334,10 @@ library(ChiRP)</code></pre>
 <h2>Contact and Issue Reporting</h2>
 <p>Please <a href="https://github.com/stablemarkets/ChiRP/issues">report issues</a> on GitHub.</p>
 <p>Package author and maintainer: Arman Oganisian. Contact via Email ( <a href="aoganisi@upenn.edu" class="uri">aoganisi@upenn.edu</a> ) or <a href="https://twitter.com/StableMarkets">Twitter</a>.</p>
+</div>
+<div id="thanks-and-acknowledgements" class="section level2">
+<h2>Thanks and Acknowledgements</h2>
+<p>Thanks to <a href="https://twitter.com/jasonroy">Jason Roy</a> for invaluable discussions regarding underlying MCMC computations. Special thanks to <a href="https://twitter.com/_Willy_Nilly">Nick Illenberger</a> and <a href="https://twitter.com/carelouu">Caroyln Lou</a> for designing the package hex and coming up with the creative name, <code>ChiRP</code>!</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
