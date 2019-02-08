@@ -31,7 +31,7 @@ library(ChiRP)
 ```
 
 ## What Are Chinese Restaurant Process Models?
-CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide very flexible fit to the data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each subgroup using a *locally* parametric model. But don't be fooled. While it is locally parametric, it assumes there are infinitely many clusters so that there are infinitely many parameters - making this a truly nonparmatric method. Please see the examples page for uses.
+CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don't be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparmatric method. Please see the examples page for uses.
 
 ## How to Cite this Package
 Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
