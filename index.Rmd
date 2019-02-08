@@ -42,6 +42,9 @@ Please [report issues](https://github.com/stablemarkets/ChiRP/issues) on GitHub.
 Package author and maintainer: Arman Oganisian.
 Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or  [Twitter](https://twitter.com/StableMarkets). 
 
+## Thanks and Acknowledgements
+Thanks to [Jason Roy](https://twitter.com/jasonroy) for invaluable discussions regarding underlying MCMC computations. Special thanks to [Nick Illenberger](https://twitter.com/_Willy_Nilly) and [Caroyln Lou](https://twitter.com/carelouu) for designing the package hex and coming up with the creative name, `ChiRP`!
+
 ## References
 [A Bayesian Nonparametric Method for Estimating Causal Treatment Effects on Zero-Inflated Outcomes](https://arxiv.org/abs/1810.09494). A. Oganisian et al. 2018.
 
