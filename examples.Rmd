@@ -179,10 +179,10 @@ One more clustering example using the Iris dataset.
 ```{r iris_sim, include=T, eval=T}
 # it helps to normalize continuous variables.
 iris <- iris
-iris$Sepal.Width <- scale(iris$Sepal.Width)
-iris$Petal.Width <- scale(iris$Petal.Width)
-iris$Petal.Length <- scale(iris$Petal.Length)
-iris$Sepal.Length <- scale(iris$Sepal.Length)
+iris$Sepal.Width <- as.vector(scale(iris$Sepal.Width))
+iris$Petal.Width <- as.vector(scale(iris$Petal.Width))
+iris$Petal.Length <- as.vector(scale(iris$Petal.Length))
+iris$Sepal.Length <- as.vector(scale(iris$Sepal.Length))
 
 # run DP Gaussian
 set.seed(3)
