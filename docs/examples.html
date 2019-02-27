@@ -559,10 +559,10 @@ legend(&#39;topleft&#39;, legend = c(&#39;Training Data&#39;,&#39;Predictive Dra
 <p>One more clustering example using the Iris dataset.</p>
 <pre class="r"><code># it helps to normalize continuous variables.
 iris &lt;- iris
-iris$Sepal.Width &lt;- scale(iris$Sepal.Width)
-iris$Petal.Width &lt;- scale(iris$Petal.Width)
-iris$Petal.Length &lt;- scale(iris$Petal.Length)
-iris$Sepal.Length &lt;- scale(iris$Sepal.Length)
+iris$Sepal.Width &lt;- as.vector(scale(iris$Sepal.Width))
+iris$Petal.Width &lt;- as.vector(scale(iris$Petal.Width))
+iris$Petal.Length &lt;- as.vector(scale(iris$Petal.Length))
+iris$Sepal.Length &lt;- as.vector(scale(iris$Sepal.Length))
 
 # run DP Gaussian
 set.seed(3)
