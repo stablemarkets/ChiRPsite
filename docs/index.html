@@ -320,6 +320,11 @@ $(document).ready(function () {
 <pre class="r"><code>## install.packages(&#39;devtools&#39; ) ## make sure to have devtools installed 
 devtools::install_github(&#39;stablemarkets/ChiRP&#39;)
 library(ChiRP)</code></pre>
+<p>Help documentation in <code>R</code> is also available. After installing the package and loading it with <code>library()</code>, use <code>?</code> to access help documentation for specific functions:</p>
+<pre class="r"><code>?ChiRP::NDPMix  # for continuous outcomes
+?ChiRP::ZDPMix  # for zero-inflated, semi-continuous outcomes
+?ChiRP::PDPMix  # for binary outcomes
+?ChiRP::cluster_assign_mode # computes posterior mode cluster assignment</code></pre>
 </div>
 <div id="what-are-chinese-restaurant-process-models" class="section level2">
 <h2>What Are Chinese Restaurant Process Models?</h2>

@@ -29,6 +29,14 @@ devtools::install_github('stablemarkets/ChiRP')
 library(ChiRP)
 ```
 
+Help documentation in `R` is also available.  After installing the package and loading it with `library()`, use `?` to access help documentation for specific functions:
+```{r helpfiles, include=T, eval=F}
+?ChiRP::NDPMix  # for continuous outcomes
+?ChiRP::ZDPMix  # for zero-inflated, semi-continuous outcomes
+?ChiRP::PDPMix  # for binary outcomes
+?ChiRP::cluster_assign_mode # computes posterior mode cluster assignment
+```
+
 ## What Are Chinese Restaurant Process Models?
 CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don't be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparametric method. Please see the examples page for uses.
 
