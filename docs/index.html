@@ -315,7 +315,7 @@ $(document).ready(function () {
 </script>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p><code>ChiRP</code> is an R package that implements <strong>Chi</strong>nese <strong>R</strong>estaurant <strong>P</strong>rocess mixtures models for regression and clustering. The package currently supports zero-inflated continuous outcomes, continous outcomes, and binary outcomes.</p>
+<p><code>ChiRP</code> is an R package that implements <strong>Chi</strong>nese <strong>R</strong>estaurant <strong>P</strong>rocess mixtures models for regression and clustering. The package currently supports zero-inflated continuous outcomes, continuous outcomes, and binary outcomes.</p>
 <p>Install from GitHub as follows:</p>
 <pre class="r"><code>## install.packages(&#39;devtools&#39; ) ## make sure to have devtools installed 
 devtools::install_github(&#39;stablemarkets/ChiRP&#39;)
@@ -323,7 +323,7 @@ library(ChiRP)</code></pre>
 </div>
 <div id="what-are-chinese-restaurant-process-models" class="section level2">
 <h2>What Are Chinese Restaurant Process Models?</h2>
-<p>CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don’t be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparmatric method. Please see the examples page for uses.</p>
+<p>CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don’t be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparametric method. Please see the examples page for uses.</p>
 </div>
 <div id="how-to-cite-this-package" class="section level2">
 <h2>How to Cite this Package</h2>
@@ -336,9 +336,18 @@ library(ChiRP)</code></pre>
 <p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> <a href="https://travis-ci.org/stablemarkets/ChiRP"><img src="https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master" alt="Build Status" /></a> <a href="https://coveralls.io/github/stablemarkets/ChiRP"><img src="https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout" alt="Coveralls github" /></a></p>
 <p>Package author and maintainer: Arman Oganisian. Contact via Email ( <a href="aoganisi@upenn.edu" class="uri">aoganisi@upenn.edu</a> ) or <a href="https://twitter.com/StableMarkets">Twitter</a>.</p>
 </div>
-<div id="thanks-and-acknowledgements" class="section level2">
-<h2>Thanks and Acknowledgements</h2>
+<div id="contributing-to-chirp" class="section level2">
+<h2>Contributing to <code>ChiRP</code></h2>
+<p>You can contribute in two ways:</p>
+<ol style="list-style-type: decimal">
+<li>Contribute to base code: First, start an issue in this repository with the proposed modification. Fork this repository, make changes/enhancements, then submit a pull request. The issue will be closed once the pull request is merged.</li>
+<li>Contribute an example: First, start an issue in the <a href="https://github.com/stablemarkets/ChiRPsite">companion site’s repository</a>. Fork the repository and add a new example to <code>examples.Rmd</code>. Use <code>rmarkdown::render_site()</code> to build the site. Submit a pull request in that same repository. The issue will be closed once updates are merged.</li>
+</ol>
+</div>
+<div id="acknowledgements" class="section level2">
+<h2>Acknowledgements</h2>
 <p>Thanks to <a href="https://twitter.com/jasonroy">Jason Roy</a> for invaluable discussions regarding underlying MCMC computations. Special thanks to <a href="https://twitter.com/_Willy_Nilly">Nick Illenberger</a> and <a href="https://twitter.com/carelouu">Caroyln Lou</a> for designing the package hex and coming up with the creative name, <code>ChiRP</code>!</p>
+<p>This work was supported in part by Grant R01GM112327 from National Institute Of General Medical Sciences.</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
