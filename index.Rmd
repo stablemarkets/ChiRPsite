@@ -41,7 +41,28 @@ Help documentation in `R` is also available.  After installing the package and l
 CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don't be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparametric method. Please see the examples page for uses.
 
 ## How to Cite this Package
-Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
+Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. BibTeX
+
+The software itself was [published](https://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a) in the Journal of Open Source Software.
+
+```{r bibtex, include=T, eval=F}
+@article{Oganisian2019ChiRP,
+	journal = {Journal of Open Source Software},
+	doi = {10.21105/joss.01287},
+	issn = {2475-9066},
+	number = {35},
+	publisher = {The Open Journal},
+	title = {ChiRP: Chinese Restaurant Process Mixtures for Regression and Clustering},
+	url = {http://dx.doi.org/10.21105/joss.01287},
+	volume = {4},
+	author = {Oganisian, Arman},
+	pages = {1287},
+	date = {2019-03-26},
+	year = {2019},
+	month = {3},
+	day = {26},
+}
+```
 
 ## Contact, GitHub, and Issue Reporting
 The package is stored on [GitHub](https://github.com/stablemarkets/ChiRP), where you can [report issues](https://github.com/stablemarkets/ChiRP/issues).
