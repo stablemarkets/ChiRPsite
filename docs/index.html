@@ -330,11 +330,34 @@ library(ChiRP)</code></pre>
 <h2>What Are Chinese Restaurant Process Models?</h2>
 <p>CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don’t be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparametric method. Please see the examples page for uses.</p>
 </div>
+<div id="contact-github-and-issue-reporting" class="section level2">
+<h2>Contact, GitHub, and Issue Reporting</h2>
+<p>The package is stored on <a href="https://github.com/stablemarkets/ChiRP">GitHub</a>, where you can <a href="https://github.com/stablemarkets/ChiRP/issues">report issues</a>.</p>
+<p>Development Status:</p>
+<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> <a href="https://travis-ci.org/stablemarkets/ChiRP"><img src="https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master" alt="Build Status" /></a> <a href="https://coveralls.io/github/stablemarkets/ChiRP"><img src="https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout" alt="Coveralls github" /></a> <a href="http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a"><img src="http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a/status.svg" alt="status" /></a> <a href="https://zenodo.org/badge/latestdoi/168850653"><img src="https://zenodo.org/badge/168850653.svg" alt="DOI" /></a></p>
+<p>Package author and maintainer: Arman Oganisian. Contact via Email ( <a href="aoganisi@upenn.edu" class="uri">aoganisi@upenn.edu</a> ) or <a href="https://twitter.com/StableMarkets">Twitter</a>.</p>
+</div>
 <div id="how-to-cite-this-package" class="section level2">
 <h2>How to Cite this Package</h2>
 <p>Since this package was written in conjunction with <a href="https://arxiv.org/abs/1810.09494">this paper</a>, please cite it when using this package. BibTeX</p>
 <p>The software itself was <a href="https://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a">published</a> in the Journal of Open Source Software.</p>
-<pre class="r"><code>@article{Oganisian2019ChiRP,
+<pre class="r"><code>@ARTICLE{2018arXiv181009494O,
+       author = {{Oganisian}, Arman and {Mitra}, Nandita and {Roy}, Jason},
+        title = &quot;{A Bayesian Nonparametric Model for Zero-Inflated Outcomes: Prediction, Clustering, and Causal Estimation}&quot;,
+      journal = {arXiv e-prints},
+     keywords = {Statistics - Methodology},
+         year = &quot;2018&quot;,
+        month = &quot;Oct&quot;,
+          eid = {arXiv:1810.09494},
+        pages = {arXiv:1810.09494},
+archivePrefix = {arXiv},
+       eprint = {1810.09494},
+ primaryClass = {stat.ME},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2018arXiv181009494O},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@article{Oganisian2019ChiRP,
     journal = {Journal of Open Source Software},
     doi = {10.21105/joss.01287},
     issn = {2475-9066},
@@ -350,13 +373,6 @@ library(ChiRP)</code></pre>
     month = {3},
     day = {26},
 }</code></pre>
-</div>
-<div id="contact-github-and-issue-reporting" class="section level2">
-<h2>Contact, GitHub, and Issue Reporting</h2>
-<p>The package is stored on <a href="https://github.com/stablemarkets/ChiRP">GitHub</a>, where you can <a href="https://github.com/stablemarkets/ChiRP/issues">report issues</a>.</p>
-<p>Development Status:</p>
-<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> <a href="https://travis-ci.org/stablemarkets/ChiRP"><img src="https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master" alt="Build Status" /></a> <a href="https://coveralls.io/github/stablemarkets/ChiRP"><img src="https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout" alt="Coveralls github" /></a></p>
-<p>Package author and maintainer: Arman Oganisian. Contact via Email ( <a href="aoganisi@upenn.edu" class="uri">aoganisi@upenn.edu</a> ) or <a href="https://twitter.com/StableMarkets">Twitter</a>.</p>
 </div>
 <div id="contributing-to-chirp" class="section level2">
 <h2>Contributing to <code>ChiRP</code></h2>

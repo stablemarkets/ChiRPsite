@@ -40,12 +40,43 @@ Help documentation in `R` is also available.  After installing the package and l
 ## What Are Chinese Restaurant Process Models?
 CRP models, aka Dirichlet Process (DP) models, are a class of Bayesian nonparametric models. They provide a very flexible fit to complex data while also providing easy uncertainty estimates via posterior inference. They work by partitioning complex data into more homogenous clusters and modeling each with a locally parametric model. But don't be fooled! While they use locally parametric models, CRP models assume there are infinitely many clusters so that the parameter space is infinite-dimensional - making this a truly nonparametric method. Please see the examples page for uses.
 
+## Contact, GitHub, and Issue Reporting
+The package is stored on [GitHub](https://github.com/stablemarkets/ChiRP), where you can [report issues](https://github.com/stablemarkets/ChiRP/issues).
+
+Development Status:
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master)](https://travis-ci.org/stablemarkets/ChiRP)
+[![Coveralls github](https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout)](https://coveralls.io/github/stablemarkets/ChiRP)
+[![status](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a/status.svg)](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a)
+[![DOI](https://zenodo.org/badge/168850653.svg)](https://zenodo.org/badge/latestdoi/168850653)
+
+
+Package author and maintainer: Arman Oganisian.
+Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or  [Twitter](https://twitter.com/StableMarkets). 
+
 ## How to Cite this Package
 Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. BibTeX
 
 The software itself was [published](https://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a) in the Journal of Open Source Software.
 
 ```{r bibtex, include=T, eval=F}
+@ARTICLE{2018arXiv181009494O,
+       author = {{Oganisian}, Arman and {Mitra}, Nandita and {Roy}, Jason},
+        title = "{A Bayesian Nonparametric Model for Zero-Inflated Outcomes: Prediction, Clustering, and Causal Estimation}",
+      journal = {arXiv e-prints},
+     keywords = {Statistics - Methodology},
+         year = "2018",
+        month = "Oct",
+          eid = {arXiv:1810.09494},
+        pages = {arXiv:1810.09494},
+archivePrefix = {arXiv},
+       eprint = {1810.09494},
+ primaryClass = {stat.ME},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2018arXiv181009494O},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
 @article{Oganisian2019ChiRP,
 	journal = {Journal of Open Source Software},
 	doi = {10.21105/joss.01287},
@@ -63,19 +94,6 @@ The software itself was [published](https://joss.theoj.org/papers/3b83a0a3f1220f
 	day = {26},
 }
 ```
-
-## Contact, GitHub, and Issue Reporting
-The package is stored on [GitHub](https://github.com/stablemarkets/ChiRP), where you can [report issues](https://github.com/stablemarkets/ChiRP/issues).
-
-Development Status:
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master)](https://travis-ci.org/stablemarkets/ChiRP)
-[![Coveralls github](https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout)](https://coveralls.io/github/stablemarkets/ChiRP)
-
-
-Package author and maintainer: Arman Oganisian.
-Contact via Email ( [aoganisi@upenn.edu](aoganisi@upenn.edu) ) or  [Twitter](https://twitter.com/StableMarkets). 
 
 ## Contributing to `ChiRP`
 You can contribute in two ways:
