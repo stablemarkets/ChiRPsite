@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Arman Oganisian" />
@@ -71,9 +71,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -87,7 +85,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -192,8 +189,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
 
 <style type="text/css">
@@ -238,6 +233,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -250,20 +246,17 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -302,7 +295,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">ChiRP: Chinese Restaurant Process Models for Regression and Clustering</h1>
-<h4 class="author"><em>Arman Oganisian</em></h4>
+<h4 class="author">Arman Oganisian</h4>
 
 </div>
 
@@ -341,21 +334,16 @@ library(ChiRP)</code></pre>
 <h2>How to Cite this Package</h2>
 <p>Since this package was written in conjunction with <a href="https://arxiv.org/abs/1810.09494">this paper</a>, please cite it when using this package. BibTeX</p>
 <p>The software itself was <a href="https://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a">published</a> in the Journal of Open Source Software.</p>
-<pre class="r"><code>@ARTICLE{2018arXiv181009494O,
-       author = {{Oganisian}, Arman and {Mitra}, Nandita and {Roy}, Jason},
-        title = &quot;{A Bayesian Nonparametric Model for Zero-Inflated Outcomes: Prediction, Clustering, and Causal Estimation}&quot;,
-      journal = {arXiv e-prints},
-     keywords = {Statistics - Methodology},
-         year = &quot;2018&quot;,
-        month = &quot;Oct&quot;,
-          eid = {arXiv:1810.09494},
-        pages = {arXiv:1810.09494},
-archivePrefix = {arXiv},
-       eprint = {1810.09494},
- primaryClass = {stat.ME},
-       adsurl = {https://ui.adsabs.harvard.edu/abs/2018arXiv181009494O},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-}
+<pre class="r"><code>@article{oganisian2020,
+author = {Oganisian, Arman and Mitra, Nandita and Roy, Jason A.},
+title = {A Bayesian nonparametric model for zero-inflated outcomes: Prediction, clustering, and causal estimation},
+journal = {Biometrics},
+year = {2020},
+pages = {1-11},
+keywords = {Bayesian, causal inference, clustering, Dirichlet process, healthcare costs, nonparametrics, zero inflation},
+doi = {10.1111/biom.13244},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/biom.13244},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1111/biom.13244}}
 
 @article{Oganisian2019ChiRP,
     journal = {Journal of Open Source Software},
@@ -389,7 +377,7 @@ archivePrefix = {arXiv},
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
-<p><a href="https://arxiv.org/abs/1810.09494">A Bayesian Nonparametric Method for Estimating Causal Treatment Effects on Zero-Inflated Outcomes</a>. A. Oganisian et al. 2018.</p>
+<p><a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/biom.13244">A Bayesian Nonparametric Method for Estimating Causal Treatment Effects on Zero-Inflated Outcomes</a>. A. Oganisian et al. 2018.</p>
 <p><a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/biom.12875">Bayesian nonparametric generative models for causal inference with missing at random covariates</a>. Roy et al. 2018.</p>
 <p><a href="https://www.ncbi.nlm.nih.gov/pubmed/27345532">A Bayesian nonparametric approach to marginal structural models for point treatments and a continuous or survival outcome</a>. Roy et al. 2016.</p>
 <p><a href="http://www.cs.columbia.edu/~blei/papers/HannahBleiPowell2011.pdf">Dirichlet Process Mixtures of Generalized Linear Models</a>. Hannah et al. 2011.</p>
@@ -413,6 +401,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
