@@ -98,7 +98,7 @@ You can contribute in two ways:
 
 
 ## Acknowledgements
-Thanks to [Jason Roy](https://twitter.com/jasonroy) for invaluable discussions regarding underlying MCMC computations. Special thanks to [Nick Illenberger](https://twitter.com/_Willy_Nilly) and [Caroyln Lou](https://twitter.com/carelouu) for designing the package hex and coming up with the creative name, `ChiRP`!
+Thanks to [Jason Roy](https://twitter.com/jasonroy) for invaluable discussions regarding underlying MCMC computations. Special thanks to [Nick Illenberger](https://twitter.com/nickillenberger) and [Caroyln Lou](https://twitter.com/carolynlou_) for designing the package hex and coming up with the creative name, `ChiRP`!
 
 This work was supported in part by Grant R01GM112327 from National Institute Of General Medical
 Sciences.
